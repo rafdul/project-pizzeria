@@ -53,17 +53,29 @@
   };
 
   class Product{
-    constructor(){
+    constructor(id, data){
       const thisProduct = this;
+      thisProduct.id = id;
+      thisProduct.data = data;
 
       console.log('new Product:', thisProduct);
     }
   }
 
+  // deklaracja wykorzystywanych metod dla zmiennej app czyli obiektu, który pomoże w organizacji kodu aplikacji,
   const app = {
     initMenu: function(){
-      const testProduct = new Product();
-      console.log('testProduct:', testProduct);
+      const thisApp = this;
+      console.log('thisApp.data:', thisApp.data); // .data to odesłanie do pliku data.js
+      for(let productData in thisApp.data.products){
+        new Product(productData, thisApp.data.products[productData]);
+      }
+    },
+
+    initData: function(){
+      const thisApp = this;
+
+      thisApp.data = dataSource;
     },
 
     init: function(){
@@ -73,9 +85,11 @@
       console.log('classNames:', classNames);
       console.log('settings:', settings);
       console.log('templates:', templates);
+      thisApp.initData();
       thisApp.initMenu();
     },
   };
 
+  // wywołanie metody, która będzie uruchamiać wszystkie pozostałe komponenty strony.
   app.init();
 }
