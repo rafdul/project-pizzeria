@@ -58,6 +58,7 @@
       thisProduct.id = id;
       thisProduct.data = data;
       thisProduct.renderInMenu();
+      thisProduct.getElements();
       thisProduct.initAccordion();
 
       console.log('new Product:', thisProduct);
@@ -77,19 +78,23 @@
       /*add element to menu*/
       menuContainer.appendChild(thisProduct.element);
     }
+    getElements(){
+      const thisProduct = this;
+
+      thisProduct.accordionTrigger = thisProduct.element.querySelector(select.menuProduct.clickable);
+      thisProduct.form = thisProduct.element.querySelector(select.menuProduct.form);
+      thisProduct.formInputs = thisProduct.form.querySelectorAll(select.all.formInputs);
+      thisProduct.cartButton = thisProduct.element.querySelector(select.menuProduct.cartButton);
+      thisProduct.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
+    }
     initAccordion(){
       const thisProduct = this;
 
       /* find the clickable trigger (the element that should react to clicking) */
-      const trigger = thisProduct.element.querySelector(select.menuProduct.clickable);
+      const trigger = thisProduct.accordionTrigger;
 
       /* START: click event listener to trigger */
-      // trigger.addEventListener('click', function (event){
       trigger.addEventListener('click', function (event){
-      //   console.log('clicked');
-      // trigger.addEventListener('click', function (event){
-
-      // trigger.addEventListener('click', function (event){
         console.log('clicked');
 
         /* prevent default action for event */
@@ -112,10 +117,8 @@
 
           /* END: if the active product isn't the element of thisProduct */
           }
-
         /* END LOOP: for each active product */
         }
-
       /* END: click event listener to trigger */
       });
     }
