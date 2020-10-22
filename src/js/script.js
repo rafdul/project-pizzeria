@@ -60,9 +60,12 @@
       thisProduct.renderInMenu();
       thisProduct.getElements();
       thisProduct.initAccordion();
+      thisProduct.initOrderForm();
+      thisProduct.processOrder();
 
       console.log('new Product:', thisProduct);
     }
+    // renderInMenu odpowiada za pojawienie się produktów na stronie (odwołuje się do data.js)
     renderInMenu(){
       const thisProduct = this;
 
@@ -78,6 +81,7 @@
       /*add element to menu*/
       menuContainer.appendChild(thisProduct.element);
     }
+    // getElements służy odnalezieniu elementów HTML w kontenerze produktu
     getElements(){
       const thisProduct = this;
 
@@ -86,16 +90,20 @@
       thisProduct.formInputs = thisProduct.form.querySelectorAll(select.all.formInputs);
       thisProduct.cartButton = thisProduct.element.querySelector(select.menuProduct.cartButton);
       thisProduct.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
+
+      // console.log(thisProduct.priceElem);
     }
+    // initAccordion pozwala wyświetlać składniki tylko jednego produktu (resztę zwija)
     initAccordion(){
       const thisProduct = this;
+      // console.log('this 1', this);
 
       /* find the clickable trigger (the element that should react to clicking) */
       const trigger = thisProduct.accordionTrigger;
 
       /* START: click event listener to trigger */
       trigger.addEventListener('click', function (event){
-        console.log('clicked');
+        console.log('clicked - listener in accordion');
 
         /* prevent default action for event */
         event.preventDefault();
@@ -114,6 +122,7 @@
 
             /* remove class active for the active product */
             activeProduct.classList.remove('active');
+            // console.log('this 2', this);
 
           /* END: if the active product isn't the element of thisProduct */
           }
@@ -121,6 +130,35 @@
         }
       /* END: click event listener to trigger */
       });
+    }
+    // initOrderForm dodaje listenery eventów do formularza, jego kontrolek, oraz guzika dodania do koszyka
+    // uruchamiana tylko raz dla każdego produktu
+    initOrderForm(){
+      const thisProduct = this;
+      console.log('initOrderForm');
+
+      thisProduct.form.addEventListener('submit', function(event){
+        event.preventDefault();
+        thisProduct.processOrder();
+      });
+
+      for(let input of thisProduct.formInputs){
+        input.addEventListener('change', function(){
+          thisProduct.processOrder();
+        });
+      }
+
+      thisProduct.cartButton.addEventListener('click', function(event){
+        event.preventDefault();
+        thisProduct.processOrder();
+      });
+
+    }
+    // processOrder to metoda obliczająca cenę produktu
+    processOrder(){
+      const thisProduct = this;
+      console.log('processOrder');
+
     }
   }
 
