@@ -191,9 +191,9 @@
           // jeśli nie jest zaznaczona opcja, która jest domyślna, cena produktu musi się zmniejszyć o cenę tej opcji.
           } else if(!optionSelected && option.default){
             price -= option.price;
-          };
+          }
           // END LOOP 2
-        };
+        }
       // END LOOP 1
       }
 
