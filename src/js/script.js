@@ -92,9 +92,11 @@
       thisProduct.formInputs = thisProduct.form.querySelectorAll(select.all.formInputs);
       thisProduct.cartButton = thisProduct.element.querySelector(select.menuProduct.cartButton);
       thisProduct.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
+      thisProduct.imageWrapper = thisProduct.element.querySelector(select.menuProduct.imageWrapper);
 
       console.log('formInputs',thisProduct.formInputs);
-      console.log('priceElement', thisProduct.priceElem);
+      // console.log('priceElement', thisProduct.priceElem);
+      console.log('imageWrapper',thisProduct.imageWrapper);
     }
 
     // initAccordion pozwala wyświetlać składniki tylko jednego produktu (resztę zwija)
@@ -165,6 +167,14 @@
       const thisProduct = this;
       console.log('processOrder');
 
+      // remove class active from images
+      const classImages = thisProduct.imageWrapper.querySelectorAll('img');
+      for(let classImage of classImages){
+        if (classImage.classList.lenght >=2){
+          classImage.classList.remove(classNames.menuProduct.imageVisible);
+        }
+      }
+
       const formData = utils.serializeFormToObject(thisProduct.form);
       console.log('formData', formData);
 
@@ -191,6 +201,26 @@
           // jeśli nie jest zaznaczona opcja, która jest domyślna, cena produktu musi się zmniejszyć o cenę tej opcji.
           } else if(!optionSelected && option.default){
             price -= option.price;
+          }
+
+          // stworzenie stałej, w której zapiszesz wyszukane elementy,
+          const visibleImages = thisProduct.imageWrapper.querySelectorAll('.' + paramId + '-' + optionId);
+          // console.log('visibleImages',visibleImages);
+
+          // blok if/else, którego warunek sprawdza tylko, czy opcja została zaznaczona,
+          if (optionSelected){
+            // wewnątrz bloku if musi znaleźć się pętla iterująca po znalezionych elementach
+            for (let image of visibleImages) {
+              image.classList.add(classNames.menuProduct.imageVisible);
+              console.log('active image', image);
+              // dodać odpowiednią klasę
+            }
+          } else {
+            // wewnątrz bloku else musi znaleźć się pętla iterująca po znalezionych elementach
+            for (let image of visibleImages) {
+            // usunąć odpowiednią klasę
+              image.classList.remove(classNames.menuProduct.imageVisible);
+            }
           }
           // END LOOP 2
         }
