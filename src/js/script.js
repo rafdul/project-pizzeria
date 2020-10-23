@@ -65,6 +65,7 @@
 
       console.log('new Product:', thisProduct);
     }
+
     // renderInMenu odpowiada za pojawienie się produktów na stronie (odwołuje się do data.js)
     renderInMenu(){
       const thisProduct = this;
@@ -81,6 +82,7 @@
       /*add element to menu*/
       menuContainer.appendChild(thisProduct.element);
     }
+
     // getElements służy odnalezieniu elementów HTML w kontenerze produktu
     getElements(){
       const thisProduct = this;
@@ -91,8 +93,10 @@
       thisProduct.cartButton = thisProduct.element.querySelector(select.menuProduct.cartButton);
       thisProduct.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
 
-      // console.log(thisProduct.priceElem);
+      console.log('formInputs',thisProduct.formInputs);
+      console.log('priceElement', thisProduct.priceElem);
     }
+
     // initAccordion pozwala wyświetlać składniki tylko jednego produktu (resztę zwija)
     initAccordion(){
       const thisProduct = this;
@@ -131,6 +135,7 @@
       /* END: click event listener to trigger */
       });
     }
+
     // initOrderForm dodaje listenery eventów do formularza, jego kontrolek, oraz guzika dodania do koszyka
     // uruchamiana tylko raz dla każdego produktu
     initOrderForm(){
@@ -154,11 +159,46 @@
       });
 
     }
+
     // processOrder to metoda obliczająca cenę produktu
     processOrder(){
       const thisProduct = this;
       console.log('processOrder');
 
+      const formData = utils.serializeFormToObject(thisProduct.form);
+      console.log('formData', formData);
+
+      let price = thisProduct.data.price;
+      console.log('price', price);
+
+      //LOOP 1 stworzymy pętlę, która iteruje po wszystkich elementach params
+      for (let paramId in thisProduct.data.params){
+        const param = thisProduct.data.params[paramId];
+        console.log('params', thisProduct.data.params);
+        console.log('paramId',paramId);
+
+        // LOOP 2 iterująca po wszystkich opcjach danego parametru
+        for (let optionId in param.options){
+          console.log('options', param.options);
+          const option = param.options[optionId];
+          // console.log('optionId', optionId);
+
+          const optionSelected = formData.hasOwnProperty(paramId) && formData[paramId].indexOf(optionId) > -1;
+
+          // jeśli jest zaznaczona opcja, która nie jest domyślna, cena produktu musi się zwiększyć o cenę tej opcji,
+          if(optionSelected && !option.default){
+            price += option.price;
+          // jeśli nie jest zaznaczona opcja, która jest domyślna, cena produktu musi się zmniejszyć o cenę tej opcji.
+          } else if(!optionSelected && option.default){
+            price -= option.price;
+          };
+          // END LOOP 2
+        };
+      // END LOOP 1
+      }
+
+      thisProduct.priceElem.innerHTML = price;
+      console.log('end price', price);
     }
   }
 
