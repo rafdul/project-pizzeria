@@ -140,8 +140,8 @@
       });
     }
 
-    // initOrderForm dodaje listenery eventów do formularza, jego kontrolek, oraz guzika dodania do koszyka
-    // uruchamiana tylko raz dla każdego produktu
+    // initOrderForm dodaje listenery eventów do formularza, jego kontrolek,
+    // oraz guzika dodania do koszyka; uruchamiana tylko raz dla każdego produktu
     initOrderForm(){
       const thisProduct = this;
       // console.log('initOrderForm');
@@ -239,6 +239,8 @@
         }
       // END LOOP 1
       }
+      // multiply price by amount
+      price *= thisProduct.amountWidget.value;
 
       thisProduct.priceElem.innerHTML = price;
       // console.log('end price', price);
@@ -249,6 +251,12 @@
       const thisProduct = this;
 
       thisProduct.amountWidget = new AmountWidget(thisProduct.amountWidgetElem);
+
+      // nasłuchiwanie eventu ('updated') stworzonego w metodzie announce i uruchamianie
+      // metody processOrder, obliczającej cenę produktu
+      thisProduct.amountWidgetElem.addEventListener('updated', function(){
+        thisProduct.processOrder();
+      });
     }
   }
 
@@ -280,29 +288,42 @@
       const newValue = parseInt(value);
 
       thisWidget.value = newValue;
+      thisWidget.announce();
       thisWidget.input.value = thisWidget.value;
     }
 
+    // metoda aktywujące buttony + i - w widgecie
     initActions(){
       const thisWidget = this;
 
-      thisWidget.input.addEventListener('change', function(){
-        // event.preventDefault();
-        // setValue(thisWidget.input.value);
+      thisWidget.input.addEventListener('change', function(event){
         thisWidget.setValue(thisWidget.input.value);
+        console.log(event);
       });
       thisWidget.linkDecrease.addEventListener('click', function(event){
         event.preventDefault();
         thisWidget.setValue(thisWidget.value -= 1);
+        // console.log(event);
       });
       thisWidget.linkIncrease.addEventListener('click', function(event){
         event.preventDefault();
         thisWidget.setValue(thisWidget.value += 1);
       });
     }
+
+    // metoda wywołująca customowy event wskazujący na konieczność zaktualizowania ceny produktu
+    // metoda tworzy instancję klasy Event, wbudowanej w silnik JS (tj. w przeglądarkę)
+    // następnie, ten event zostanie wywołany na kontenerze naszego widgetu.
+    announce(){
+      const thisWidget = this;
+
+      const event = new Event('updated');
+      thisWidget.element.dispatchEvent(event);
+    }
   }
 
-  // deklaracja wykorzystywanych metod dla zmiennej app czyli obiektu, który pomoże w organizacji kodu aplikacji,
+  // deklaracja wykorzystywanych metod dla zmiennej app czyli obiektu,
+  // który pomoże w organizacji kodu aplikacji,
   const app = {
     initMenu: function(){
       const thisApp = this;
