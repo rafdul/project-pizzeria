@@ -203,25 +203,36 @@
             price -= option.price;
           }
 
+          // Modyfikacja obrazkó obok produktów
           // stworzenie stałej, w której zapiszesz wyszukane elementy,
           const visibleImages = thisProduct.imageWrapper.querySelectorAll('.' + paramId + '-' + optionId);
           // console.log('visibleImages',visibleImages);
 
-          // blok if/else, którego warunek sprawdza tylko, czy opcja została zaznaczona,
-          if (optionSelected){
-            // wewnątrz bloku if musi znaleźć się pętla iterująca po znalezionych elementach
-            for (let image of visibleImages) {
+          for (let image of visibleImages) {
+            if(optionSelected){
               image.classList.add(classNames.menuProduct.imageVisible);
-              console.log('active image', image);
-              // dodać odpowiednią klasę
-            }
-          } else {
-            // wewnątrz bloku else musi znaleźć się pętla iterująca po znalezionych elementach
-            for (let image of visibleImages) {
-            // usunąć odpowiednią klasę
+              // console.log('active image', image);
+            } else {
               image.classList.remove(classNames.menuProduct.imageVisible);
             }
           }
+
+          // Sposób opisany w skrypcie
+          // // blok if/else, którego warunek sprawdza tylko, czy opcja została zaznaczona,
+          // if (optionSelected){
+          //   // wewnątrz bloku if musi znaleźć się pętla iterująca po znalezionych elementach
+          //   for (let image of visibleImages) {
+          //     image.classList.add(classNames.menuProduct.imageVisible);
+          //     console.log('active image', image);
+          //     // dodać odpowiednią klasę
+          //   }
+          // } else {
+          //   // wewnątrz bloku else musi znaleźć się pętla iterująca po znalezionych elementach
+          //   for (let image of visibleImages) {
+          //   // usunąć odpowiednią klasę
+          //     image.classList.remove(classNames.menuProduct.imageVisible);
+          //   }
+          // }
           // END LOOP 2
         }
       // END LOOP 1
