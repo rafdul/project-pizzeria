@@ -61,12 +61,13 @@
       thisProduct.getElements();
       thisProduct.initAccordion();
       thisProduct.initOrderForm();
+      thisProduct.initAmountWidget();
       thisProduct.processOrder();
 
       console.log('new Product:', thisProduct);
     }
 
-    // renderInMenu odpowiada za pojawienie się produktów na stronie (odwołuje się do data.js)
+    // metoda renderInMenu odpowiada za pojawienie się produktów na stronie (odwołuje się do data.js)
     renderInMenu(){
       const thisProduct = this;
 
@@ -83,7 +84,7 @@
       menuContainer.appendChild(thisProduct.element);
     }
 
-    // getElements służy odnalezieniu elementów HTML w kontenerze produktu
+    // metoda getElements służy odnalezieniu elementów HTML w kontenerze produktu
     getElements(){
       const thisProduct = this;
 
@@ -93,13 +94,14 @@
       thisProduct.cartButton = thisProduct.element.querySelector(select.menuProduct.cartButton);
       thisProduct.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
       thisProduct.imageWrapper = thisProduct.element.querySelector(select.menuProduct.imageWrapper);
+      thisProduct.amountWidgetElem = thisProduct.element.querySelector(select.menuProduct.amountWidget);
 
-      console.log('formInputs',thisProduct.formInputs);
-      // console.log('priceElement', thisProduct.priceElem);
-      console.log('imageWrapper',thisProduct.imageWrapper);
+      // console.log('formInputs',thisProduct.formInputs);
+      // console.log('priceElement', amountWidgetElem);
+      // console.log('imageWrapper',thisProduct.imageWrapper);
     }
 
-    // initAccordion pozwala wyświetlać składniki tylko jednego produktu (resztę zwija)
+    // metoda initAccordion pozwala wyświetlać składniki tylko jednego produktu (resztę zwija)
     initAccordion(){
       const thisProduct = this;
       // console.log('this 1', this);
@@ -109,7 +111,7 @@
 
       /* START: click event listener to trigger */
       trigger.addEventListener('click', function (event){
-        console.log('clicked - listener in accordion');
+        // console.log('clicked - listener in accordion');
 
         /* prevent default action for event */
         event.preventDefault();
@@ -142,7 +144,7 @@
     // uruchamiana tylko raz dla każdego produktu
     initOrderForm(){
       const thisProduct = this;
-      console.log('initOrderForm');
+      // console.log('initOrderForm');
 
       thisProduct.form.addEventListener('submit', function(event){
         event.preventDefault();
@@ -165,7 +167,7 @@
     // processOrder to metoda obliczająca cenę produktu
     processOrder(){
       const thisProduct = this;
-      console.log('processOrder');
+      // console.log('processOrder');
 
       // remove class active from images
       const classImages = thisProduct.imageWrapper.querySelectorAll('img');
@@ -176,20 +178,20 @@
       }
 
       const formData = utils.serializeFormToObject(thisProduct.form);
-      console.log('formData', formData);
+      // console.log('formData', formData);
 
       let price = thisProduct.data.price;
-      console.log('price', price);
+      // console.log('price', price);
 
       //LOOP 1 stworzymy pętlę, która iteruje po wszystkich elementach params
       for (let paramId in thisProduct.data.params){
         const param = thisProduct.data.params[paramId];
-        console.log('params', thisProduct.data.params);
-        console.log('paramId',paramId);
+        // console.log('params', thisProduct.data.params);
+        // console.log('paramId',paramId);
 
         // LOOP 2 iterująca po wszystkich opcjach danego parametru
         for (let optionId in param.options){
-          console.log('options', param.options);
+          // console.log('options', param.options);
           const option = param.options[optionId];
           // console.log('optionId', optionId);
 
@@ -239,7 +241,23 @@
       }
 
       thisProduct.priceElem.innerHTML = price;
-      console.log('end price', price);
+      // console.log('end price', price);
+    }
+
+    // initAmountWidget tworzy instancję klasy AmountWidget i zapisywała ją we właściwości produktu
+    initAmountWidget(){
+      const thisProduct = this;
+
+      thisProduct.amountWidget = new AmountWidget(thisProduct.amountWidgetElem);
+    }
+  }
+
+  class AmountWidget{
+    constructor(element){
+      const thisWidget = this;
+
+      console.log('AmountWidget:', thisWidget);
+      console.log('construkctor arguments:', element);
     }
   }
 
