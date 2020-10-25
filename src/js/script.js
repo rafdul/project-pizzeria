@@ -257,6 +257,10 @@
       thisProduct.amountWidgetElem.addEventListener('updated', function(){
         thisProduct.processOrder();
       });
+
+      // thisProduct.amountWidgetElem.setAttribute("data-min", 1);
+      // thisProduct.amountWidgetElem.setAttribute("data-max", 9);
+
     }
   }
 
@@ -265,6 +269,7 @@
       const thisWidget = this;
 
       thisWidget.getElements(element);
+      thisWidget.value = settings.amountWidget.defaultValue;
       thisWidget.setValue(thisWidget.input.value);
       thisWidget.initActions();
 
@@ -287,8 +292,11 @@
 
       const newValue = parseInt(value);
 
-      thisWidget.value = newValue;
-      thisWidget.announce();
+      if(newValue !== thisWidget.input.value && newValue >= settings.amountWidget.defaultMin && newValue <= settings.amountWidget.defaultMax) {
+        thisWidget.value = newValue;
+        thisWidget.announce();
+      }
+
       thisWidget.input.value = thisWidget.value;
     }
 
@@ -299,15 +307,16 @@
       thisWidget.input.addEventListener('change', function(event){
         thisWidget.setValue(thisWidget.input.value);
         console.log(event);
+        console.log(thisWidget.input.value);
       });
       thisWidget.linkDecrease.addEventListener('click', function(event){
         event.preventDefault();
-        thisWidget.setValue(thisWidget.value -= 1);
+        thisWidget.setValue(thisWidget.value -= 1 && thisWidget.value > settings.amountWidget.defaultMin);
         // console.log(event);
       });
       thisWidget.linkIncrease.addEventListener('click', function(event){
         event.preventDefault();
-        thisWidget.setValue(thisWidget.value += 1);
+        thisWidget.setValue(thisWidget.value += 1 && thisWidget.value < settings.amountWidget.defaultMax);
       });
     }
 
@@ -320,6 +329,8 @@
       const event = new Event('updated');
       thisWidget.element.dispatchEvent(event);
     }
+
+
   }
 
   // deklaracja wykorzystywanych metod dla zmiennej app czyli obiektu,
