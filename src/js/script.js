@@ -268,7 +268,7 @@
       thisWidget.value = settings.amountWidget.defaultValue;
       // thisWidget.element.setAttribute('data-min', settings.amountWidget.defaultMin);
       // thisWidget.element.setAttribute('data-max', settings.amountWidget.defaultMax);
-      thisWidget.setValue();
+      thisWidget.setValue(settings.amountWidget.defaultValue);
       thisWidget.initActions();
 
       console.log('AmountWidget:', thisWidget);
