@@ -257,11 +257,6 @@
       thisProduct.amountWidgetElem.addEventListener('updated', function(){
         thisProduct.processOrder();
       });
-
-      // thisProduct.amountWidgetElem.setAttribute('data-min', settings.amountWidget.defaultMin);
-      // thisProduct.amountWidgetElem.setAttribute('data-max', settings.amountWidget.defaultMax);
-      // console.log(thisProduct.amountWidgetElem);
-
     }
   }
 
@@ -273,18 +268,13 @@
       thisWidget.value = settings.amountWidget.defaultValue;
       // thisWidget.element.setAttribute('data-min', settings.amountWidget.defaultMin);
       // thisWidget.element.setAttribute('data-max', settings.amountWidget.defaultMax);
-      // thisWidget.limitAmount();
-      thisWidget.setValue(thisWidget.input.value);
+      thisWidget.setValue();
       thisWidget.initActions();
-
 
       console.log('AmountWidget:', thisWidget);
       console.log('construkctor arguments:', element);
 
-
       console.log(thisWidget.element);
-      // console.log(thisWidget.element.getAttribute('data-min'));
-      // console.log(thisWidget.element.getAttribute('data-max'));
     }
 
     getElements(element){
@@ -301,7 +291,6 @@
       const thisWidget = this;
       // thisWidget.limitAmount();
 
-      // thisWidget.value = settings.amountWidget.defaultValue;
       const newValue = parseInt(value);
 
       // const minLimit = thisWidget.element.getAttribute('data-min');
@@ -310,7 +299,7 @@
       // console.log(maxLimit);
 
       if(newValue !== thisWidget.input.value && newValue >= settings.amountWidget.defaultMin && newValue <= settings.amountWidget.defaultMax) {
-      // if(newValue !== thisWidget.input.value && newValue >= thisWidget.limitAmount() && newValue <= thisWidget.limitAmount()) {
+      // if(newValue !== thisWidget.input.value && newValue >= minLimit && newValue <= maxLimit) {
         thisWidget.value = newValue;
 
         thisWidget.announce();
@@ -318,6 +307,12 @@
       }
 
       thisWidget.input.value = thisWidget.value;
+
+      // inna metoda określenia limitów min i max dla wartości w widgecie
+      // 1. w konstruktorze amountWidget dodaję do thisWidget.element nowe atrybuty data-min i data-max
+      // 2. w metodzie setValue tworzę zmienne minLimit i maxLimit pobierające wartości tych atrybutów
+      // 3. w warunku if wykorzystuje te dwie zmienne do określenia min i max dla wartości widgeta
+
     }
 
     // metoda aktywujące buttony + i - w widgecie
@@ -342,26 +337,6 @@
       });
     }
 
-    // metoda ustawiająca limity na podstawie dodanych atrybutów data-min i data-max
-    // limitAmount(){
-    //   const thisWidget = this;
-
-    //   const limit = {
-    //     min: thisWidget.element.getAttribute('data-min'),
-    //     max: thisWidget.element.getAttribute('data-max'),
-    //   };
-
-    //   // const minLimit = thisWidget.element.getAttribute('data-min');
-    //   // const maxLimit = thisWidget.element.getAttribute('data-max');
-
-    //   // console.log(minLimit);
-    //   // console.log(maxLimit);
-    //   console.log(limit);
-    //   console.log(limit.min);
-    //   console.log(limit.max);
-    // }
-
-
     // metoda wywołująca customowy event wskazujący na konieczność zaktualizowania ceny produktu
     // metoda tworzy instancję klasy Event, wbudowanej w silnik JS (tj. w przeglądarkę)
     // następnie, ten event zostanie wywołany na kontenerze naszego widgetu.
@@ -371,8 +346,6 @@
       const event = new Event('updated');
       thisWidget.element.dispatchEvent(event);
     }
-
-
   }
 
   // deklaracja wykorzystywanych metod dla zmiennej app czyli obiektu,
