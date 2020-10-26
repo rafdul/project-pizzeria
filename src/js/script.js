@@ -205,7 +205,7 @@
             price -= option.price;
           }
 
-          // Modyfikacja obrazkó obok produktów
+          // Modyfikacja obrazków obok produktów
           // stworzenie stałej, w której zapiszesz wyszukane elementy,
           const visibleImages = thisProduct.imageWrapper.querySelectorAll('.' + paramId + '-' + optionId);
           // console.log('visibleImages',visibleImages);
@@ -258,8 +258,9 @@
         thisProduct.processOrder();
       });
 
-      // thisProduct.amountWidgetElem.setAttribute("data-min", 1);
-      // thisProduct.amountWidgetElem.setAttribute("data-max", 9);
+      // thisProduct.amountWidgetElem.setAttribute('data-min', settings.amountWidget.defaultMin);
+      // thisProduct.amountWidgetElem.setAttribute('data-max', settings.amountWidget.defaultMax);
+      // console.log(thisProduct.amountWidgetElem);
 
     }
   }
@@ -270,11 +271,20 @@
 
       thisWidget.getElements(element);
       thisWidget.value = settings.amountWidget.defaultValue;
+      // thisWidget.element.setAttribute('data-min', settings.amountWidget.defaultMin);
+      // thisWidget.element.setAttribute('data-max', settings.amountWidget.defaultMax);
+      // thisWidget.limitAmount();
       thisWidget.setValue(thisWidget.input.value);
       thisWidget.initActions();
 
+
       console.log('AmountWidget:', thisWidget);
       console.log('construkctor arguments:', element);
+
+
+      console.log(thisWidget.element);
+      // console.log(thisWidget.element.getAttribute('data-min'));
+      // console.log(thisWidget.element.getAttribute('data-max'));
     }
 
     getElements(element){
@@ -289,12 +299,22 @@
     // metoda ustawiająca nową wartość widgetu
     setValue(value){
       const thisWidget = this;
+      // thisWidget.limitAmount();
 
+      // thisWidget.value = settings.amountWidget.defaultValue;
       const newValue = parseInt(value);
 
+      // const minLimit = thisWidget.element.getAttribute('data-min');
+      // const maxLimit = thisWidget.element.getAttribute('data-max');
+      // console.log(minLimit);
+      // console.log(maxLimit);
+
       if(newValue !== thisWidget.input.value && newValue >= settings.amountWidget.defaultMin && newValue <= settings.amountWidget.defaultMax) {
+      // if(newValue !== thisWidget.input.value && newValue >= thisWidget.limitAmount() && newValue <= thisWidget.limitAmount()) {
         thisWidget.value = newValue;
+
         thisWidget.announce();
+        // console.log(minLimit);
       }
 
       thisWidget.input.value = thisWidget.value;
@@ -311,14 +331,36 @@
       });
       thisWidget.linkDecrease.addEventListener('click', function(event){
         event.preventDefault();
-        thisWidget.setValue(thisWidget.value -= 1 && thisWidget.value > settings.amountWidget.defaultMin);
+        thisWidget.setValue(thisWidget.value - 1);
+        // thisWidget.setValue(thisWidget.value -= 1 && thisWidget.value > settings.amountWidget.defaultMin);
         // console.log(event);
       });
       thisWidget.linkIncrease.addEventListener('click', function(event){
         event.preventDefault();
-        thisWidget.setValue(thisWidget.value += 1 && thisWidget.value < settings.amountWidget.defaultMax);
+        thisWidget.setValue(thisWidget.value + 1);
+        // thisWidget.setValue(thisWidget.value += 1 && thisWidget.value < settings.amountWidget.defaultMax);
       });
     }
+
+    // metoda ustawiająca limity na podstawie dodanych atrybutów data-min i data-max
+    // limitAmount(){
+    //   const thisWidget = this;
+
+    //   const limit = {
+    //     min: thisWidget.element.getAttribute('data-min'),
+    //     max: thisWidget.element.getAttribute('data-max'),
+    //   };
+
+    //   // const minLimit = thisWidget.element.getAttribute('data-min');
+    //   // const maxLimit = thisWidget.element.getAttribute('data-max');
+
+    //   // console.log(minLimit);
+    //   // console.log(maxLimit);
+    //   console.log(limit);
+    //   console.log(limit.min);
+    //   console.log(limit.max);
+    // }
+
 
     // metoda wywołująca customowy event wskazujący na konieczność zaktualizowania ceny produktu
     // metoda tworzy instancję klasy Event, wbudowanej w silnik JS (tj. w przeglądarkę)
