@@ -402,6 +402,7 @@
       const thisCart = this;
 
       thisCart.products = [];
+      // console.log(thisCart.products);
 
       thisCart.getElements(element);
       thisCart.initActions();
@@ -413,10 +414,10 @@
       const thisCart = this;
 
       thisCart.dom = {};
-      // console.log(thisCart.dom);
 
       thisCart.dom.wrapper = element;
       thisCart.dom.toggleTrigger = thisCart.dom.wrapper.querySelector(select.cart.toggleTrigger);
+      thisCart.dom.productList = thisCart.dom.wrapper.querySelector(select.cart.productList);
       // console.log(thisCart.dom.wrapper);
       // console.log(thisCart.dom.toggleTrigger);
     }
@@ -432,7 +433,16 @@
     }
 
     add(menuProduct){
-      // const thisCart = this;
+      const thisCart = this;
+
+      // Make html code by templates and save to const
+      const generatedHTML = templates.cartProduct(menuProduct);
+
+      // Change html code in DOM elements and save to const
+      const generatedDOM = utils.createDOMFromHTML(generatedHTML);
+
+      // Add DOM elements to thisCart.dom.productList
+      thisCart.dom.productList.appendChild(generatedDOM);
 
       console.log('adding product', menuProduct); // menuProduct=thisProduct z metody addToCart w produkcie
     }
