@@ -207,6 +207,8 @@
       const formData = utils.serializeFormToObject(thisProduct.form);
       // console.log('formData', formData);
 
+      thisProduct.params = {};
+      // set variable price to equal thisProduct.data.price
       let price = thisProduct.data.price;
       // console.log('price', price);
 
@@ -239,6 +241,13 @@
 
           for (let image of visibleImages) {
             if(optionSelected){
+              if(!thisProduct.params[paramId]){
+                thisProduct.params[paramId] = {
+                  label: param.label,
+                  options: {},
+                };
+              }
+              thisProduct.params[paramId].options[optionId] = option.label;
               image.classList.add(classNames.menuProduct.imageVisible);
               // console.log('active image', image);
             } else {
@@ -267,10 +276,12 @@
       // END LOOP 1
       }
       // multiply price by amount
-      price *= thisProduct.amountWidget.value;
-
-      thisProduct.priceElem.innerHTML = price;
+      thisProduct.priceSingle = price;
+      thisProduct.price = thisProduct.priceSingle * thisProduct.amountWidget.value;
+      //  set the contents of thisProduct.priceElem to be the value of variable price
+      thisProduct.priceElem.innerHTML = thisProduct.price;
       // console.log('end price', price);
+      console.log('thisProduct.params',thisProduct.params);
     }
 
     // initAmountWidget tworzy instancję klasy AmountWidget i zapisywała ją we właściwości produktu
@@ -290,10 +301,12 @@
     addToCart(){
       const thisProduct = this;
 
+      thisProduct.name = thisProduct.data.name;
+      thisProduct.amount = thisProduct.amountWidget.value ;
+
       app.cart.add(thisProduct);
       // console.log(thisProduct);
     }
-
   }
 
   class AmountWidget{
