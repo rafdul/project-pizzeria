@@ -432,7 +432,8 @@
       // console.log(thisCart.dom.toggleTrigger);
     }
 
-    // metoda służąca pokazywaniu i ukrywaniu koszyka
+    // metoda służąca pokazywaniu i ukrywaniu koszyka;
+    // wychwytywaniu eventów o aktualizacji zawartości koszyka (po dodaniu produktu, usunięciu)
     initActions(){
       const thisCart = this;
 
@@ -443,6 +444,19 @@
       thisCart.dom.productList.addEventListener('updated', function(){
         thisCart.update();
       });
+      thisCart.dom.productList.addEventListener('remove', function(event){
+        thisCart.remove(event.detail.cartProduct);
+      });
+    }
+
+    // metoda usuwająca produkt z koszyka
+    remove(cartProduct){
+      const thisCart = this;
+
+      const index = thisCart.products.indexOf(cartProduct);
+      thisCart.products.splice(index, 1);
+      cartProduct.dom.wrapper.remove();
+      thisCart.update();
     }
 
     add(menuProduct){
@@ -539,7 +553,7 @@
       });
     }
 
-    // metoda usuwająca produkt z koszyka
+    // metoda wysyłająca event do koszyka 'usuń produkt'
     remove(){
       const thisCartProduct = this;
 
