@@ -71,6 +71,11 @@
     cart: {
       defaultDeliveryFee: 20,
     },
+    db: {
+      url: '//localhost:3131',
+      product: 'product',
+      order: 'order',
+    },
   };
 
   const templates = {
@@ -590,14 +595,34 @@
       const thisApp = this;
       // console.log('thisApp.data:', thisApp.data); // .data to odesłanie do pliku data.js
       for(let productData in thisApp.data.products){
-        new Product(productData, thisApp.data.products[productData]);
+        new Product(thisApp.data.products[productData].id, thisApp.data.products[productData]);
       }
     },
 
     initData: function(){
       const thisApp = this;
 
-      thisApp.data = dataSource;
+      thisApp.data = {};
+      const url = settings.db.url + '/' + settings.db.product;
+
+      // wywołanie zapytania AJAX
+      fetch(url)
+        .then(function(rawResponse){
+          return rawResponse.json();
+        })
+        .then(function(parsedResponse){
+          console.log('parsedResponse', parsedResponse);
+
+          // save parsedResponse as thisApp.data.products
+          thisApp.data.products = parsedResponse;
+
+          // execute initMenu method
+          /* metodę initMenu trzeba było przenieść do tego miejsca z samego końca, */
+          /*  ponieważ w związku z asynchronicznością AJAX uruchamiałaby się */
+          /*  zanim skrypt otrzymałby z serwera listę produktów */
+          thisApp.initMenu();
+        });
+      console.log('thisApp.data', JSON.stringify(thisApp.data));
     },
 
     // metoda inicjująca instację koszyka; przekazujemy jej wraper koszyka
@@ -616,7 +641,7 @@
       console.log('settings:', settings);
       console.log('templates:', templates);
       thisApp.initData();
-      thisApp.initMenu();
+      // thisApp.initMenu();
       thisApp.initCart();
     },
   };
