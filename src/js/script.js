@@ -434,6 +434,8 @@
       }
 
       thisCart.dom.form = thisCart.dom.wrapper.querySelector(select.cart.form);
+      thisCart.dom.phone = thisCart.dom.wrapper.querySelector(select.cart.phone);
+      thisCart.dom.address = thisCart.dom.wrapper.querySelector(select.cart.address);
 
       // console.log(thisCart.dom.wrapper);
       // console.log(thisCart.dom.toggleTrigger);
@@ -457,7 +459,7 @@
       thisCart.dom.form.addEventListener('submit', function(event){
         event.preventDefault();
         thisCart.sendOrder();
-      })
+      });
     }
 
     // metoda usuwająca produkt z koszyka
@@ -522,9 +524,21 @@
       const url = settings.db.url + '/' + settings.db.order;
 
       const payload = {
-        address: 'test',
+        phone: thisCart.dom.phone.value,
+        address: thisCart.dom.address.value,
+        totalNumber: thisCart.totalNumber,
+        subtotalPrice: thisCart.subtotalPrice,
+        deliveryFee: settings.cart.defaultDeliveryFee,
         totalPrice: thisCart.totalPrice,
+        products: [],
       };
+
+      // pętla iterująca po wszystkich thisCart.products,
+      // i dla każdego produktu wywołująca jego metodę getData (napisana w CartProduct)
+      for(let product of thisCart.products){
+        // product.getData();
+        payload.products.push(product.getData());
+      }
 
       const options = {
         method: 'POST',
@@ -541,6 +555,7 @@
         .then(function(parsedResponse){
           console.log('parsedResponse', parsedResponse);
         });
+      // console.log('payload.products', payload.products);
     }
   }
 
@@ -558,6 +573,7 @@
       thisCartProduct.getElements(element);
       thisCartProduct.initAmountWidget();
       thisCartProduct.initActions();
+      thisCartProduct.getData();
 
       // console.log('new cartProduct:', thisCartProduct);
       // console.log('menu product', menuProduct);
@@ -619,6 +635,20 @@
         thisCartProduct.remove();
         // console.log('start remove in cart',event);
       });
+    }
+
+    getData(){
+      const thisCartProduct = this;
+
+      const dataProduct = {
+        id: thisCartProduct.id,
+        price: thisCartProduct.price,
+        priceSingle: thisCartProduct.priceSingle,
+        amount: thisCartProduct.amount,
+        params: thisCartProduct.params,
+      };
+      // console.log('dataProduct', dataProduct);
+      return dataProduct;
     }
   }
 
