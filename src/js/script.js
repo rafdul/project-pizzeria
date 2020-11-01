@@ -246,13 +246,6 @@
 
           for (let image of visibleImages) {
             if(optionSelected){
-              if(!thisProduct.params[paramId]){
-                thisProduct.params[paramId] = {
-                  label: param.label,
-                  options: {},
-                };
-              }
-              thisProduct.params[paramId].options[optionId] = option.label;
               image.classList.add(classNames.menuProduct.imageVisible);
               // console.log('active image', image);
             } else {
