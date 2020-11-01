@@ -244,15 +244,16 @@
           const visibleImages = thisProduct.imageWrapper.querySelectorAll('.' + paramId + '-' + optionId);
           // console.log('visibleImages',visibleImages);
 
+          if(!thisProduct.params[paramId]){
+            thisProduct.params[paramId] = {
+              label: param.label,
+              options: {},
+            };
+          }
+
+          thisProduct.params[paramId].options[optionId] = option.label;
           for (let image of visibleImages) {
             if(optionSelected){
-              if(!thisProduct.params[paramId]){
-                thisProduct.params[paramId] = {
-                  label: param.label,
-                  options: {},
-                };
-              }
-              thisProduct.params[paramId].options[optionId] = option.label;
               image.classList.add(classNames.menuProduct.imageVisible);
               // console.log('active image', image);
             } else {
@@ -263,7 +264,14 @@
           // Sposób opisany w skrypcie
           // // blok if/else, którego warunek sprawdza tylko, czy opcja została zaznaczona,
           // if (optionSelected){
-          //   // wewnątrz bloku if musi znaleźć się pętla iterująca po znalezionych elementach
+          //   if(!thisProduct.params[paramId]){
+          //     thisProduct.params[paramId] = {
+          //       label: param.label,
+          //       options: {},
+          //     };
+          //   }
+          //   thisProduct.params[paramId].options[optionId] = option.label;
+          // // wewnątrz bloku if musi znaleźć się pętla iterująca po znalezionych elementach
           //   for (let image of visibleImages) {
           //     image.classList.add(classNames.menuProduct.imageVisible);
           //     console.log('active image', image);
@@ -573,7 +581,6 @@
       thisCartProduct.getElements(element);
       thisCartProduct.initAmountWidget();
       thisCartProduct.initActions();
-      thisCartProduct.getData();
 
       // console.log('new cartProduct:', thisCartProduct);
       // console.log('menu product', menuProduct);
