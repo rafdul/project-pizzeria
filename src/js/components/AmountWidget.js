@@ -22,9 +22,9 @@ class AmountWidget{
     const thisWidget = this;
 
     thisWidget.element = element;
-    thisWidget.input = element.querySelector(select.widgets.amount.input);
-    thisWidget.linkDecrease = element.querySelector(select.widgets.amount.linkDecrease);
-    thisWidget.linkIncrease = element.querySelector(select.widgets.amount.linkIncrease);
+    thisWidget.input = thisWidget.element.querySelector(select.widgets.amount.input);
+    thisWidget.linkDecrease = thisWidget.element.querySelector(select.widgets.amount.linkDecrease);
+    thisWidget.linkIncrease = thisWidget.element.querySelector(select.widgets.amount.linkIncrease);
   }
 
   // metoda ustawiająca nową wartość widgetu
