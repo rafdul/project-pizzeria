@@ -1,11 +1,13 @@
 import {classNames, templates, settings, select} from './settings.js';
 import Product from './components/Product.js';
 import Cart from './components/Cart.js';
+import Booking from './components/Booking.js';
 
 // deklaracja wykorzystywanych metod dla zmiennej app czyli obiektu,
 // który pomoże w organizacji kodu aplikacji,
 const app = {
-  // metoda przełączania podstron (bez przeładowywania strony)
+  // metoda przełączania podstron (bez przeładowywania strony);
+  // uruchamiana podczas odświeżania strony
   initPages: function(){
     const thisApp = this;
 
@@ -13,7 +15,6 @@ const app = {
     thisApp.navLinks = document.querySelectorAll(select.nav.links);
 
     const idFromHash = window.location.hash.replace('#/', '');
-    console.log('idFromHash', idFromHash);
 
     let pageMatchingHash = thisApp.pages[0].id;
 
@@ -23,7 +24,6 @@ const app = {
         break;
       }
     }
-    console.log('pageMatchingHash', pageMatchingHash);
 
     // uruchomienie metody aktywacji podstrony pierwszej (czyli o indeksie 0 w tablicy)
     // znalezionej w selektorze thisApp.pages; konieczne wydobycie id, bo w html tylko tym atrybutem są one różnicowane
@@ -46,6 +46,7 @@ const app = {
     }
   },
 
+  // co dzieje sie w momencie aktywacji strony
   activatePage: function(pageId){
     const thisApp = this;
 
@@ -121,6 +122,16 @@ const app = {
     });
   },
 
+  initBooking: function(){
+    const thisApp = this;
+
+    // metoda znajdująca kontener widgetu do rezerwacji stron
+    const containerOfBooking = document.querySelector(select.containerOf.booking);
+    console.log(containerOfBooking);
+
+    thisApp.booking = new Booking(containerOfBooking);
+  },
+
   init: function(){
     const thisApp = this;
     console.log('*** App starting ***');
@@ -132,6 +143,7 @@ const app = {
     thisApp.initData();
     // thisApp.initMenu();
     thisApp.initCart();
+    thisApp.initBooking();
   },
 };
 
