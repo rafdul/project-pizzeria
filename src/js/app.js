@@ -127,7 +127,7 @@ const app = {
 
     // metoda znajdująca kontener widgetu do rezerwacji stron
     const containerOfBooking = document.querySelector(select.containerOf.booking);
-    console.log(containerOfBooking);
+    // console.log(containerOfBooking);
 
     thisApp.booking = new Booking(containerOfBooking);
   },
