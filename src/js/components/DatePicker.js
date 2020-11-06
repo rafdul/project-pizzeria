@@ -1,4 +1,4 @@
-
+/*global flatpickr*/
 
 import BaseWidget from'./BaseWidget.js';
 import {utils} from '../utils.js';
@@ -36,6 +36,7 @@ class DatePicker extends BaseWidget {
       ],
       onChange: function(selectedDates, dateStr){
         thisWidget.value = dateStr;
+        // console.log(dateStr);
       }
     });
   }
@@ -43,6 +44,7 @@ class DatePicker extends BaseWidget {
   // domyślna metoda nie ma zastosowania, bo wartością pluginu nie będzie liczba
   // trzeba nadpisać, aby zwracała otrzymany argument, nie wykonując na nim żadnych operacji
   parseValue(value){
+    // console.log(value);
     return value;
   }
 
