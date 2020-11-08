@@ -1,4 +1,4 @@
-import {classNames, templates, select} from '../settings.js';
+import {classNames, templates, select, settings} from '../settings.js';
 import AmountWidget from './AmountWidget.js';
 import {utils} from '../utils.js';
 
@@ -45,17 +45,6 @@ class Product{
     thisProduct.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
     thisProduct.imageWrapper = thisProduct.element.querySelector(select.menuProduct.imageWrapper);
     thisProduct.amountWidgetElem = thisProduct.element.querySelector(select.menuProduct.amountWidget);
-
-    // /* do resetowania produktu po dodaniu do koszyka*/
-    // thisProduct.defaultParamsOptions = thisProduct.form.querySelectorAll('input[checked], option[selected]');
-    // console.log(thisProduct.form.querySelectorAll('input[checked], option[selected]'));
-    // console.log(thisProduct.form.querySelectorAll('input[defaultChecked], option[defaultSelected]'));
-    // console.log(thisProduct.form.querySelectorAll('input[value]'));
-    // console.log(thisProduct.form.querySelectorAll('input[defaultValue]'));
-
-    // console.log(thisProduct.form.querySelectorAll('input:checked'));
-    // console.log(thisProduct.form.querySelectorAll('option[selected]'));
-
 
     // console.log('formInputs',thisProduct.formInputs);
     // console.log('priceElement', amountWidgetElem);
@@ -123,7 +112,7 @@ class Product{
       thisProduct.processOrder();
       thisProduct.addToCart();
 
-      // thisProduct.defaultProduct();
+      thisProduct.defaultProduct();
 
     });
 
@@ -137,7 +126,7 @@ class Product{
     // remove class active from images
     const classImages = thisProduct.imageWrapper.querySelectorAll('img');
     for(let classImage of classImages){
-      if (classImage.classList.lenght >=2){
+      if (classImage.classList.length >=2){
         classImage.classList.remove(classNames.menuProduct.imageVisible);
       }
     }
@@ -270,77 +259,84 @@ class Product{
     thisProduct.element.dispatchEvent(event);
   }
 
-  /* do resetowania produktu po dodaniu do koszyka*/
-  /* START*/
-  /*defaultProduct(){
+  /* do resetowania produktu (ilości, ceny, opcji i zdjęć) po dodaniu do koszyka*/
+  defaultProduct(){
     const thisProduct = this;
-    console.log(this);
-    // console.log(thisProduct.data.params);
+    // console.log(this);
 
+    // reset do domyślnej ilości w widgecie
     thisProduct.element.querySelector(select.widgets.amount.input).value = settings.amountWidget.defaultValue;
 
+    // reset do pojedynczej ceny w domyślnej konfiguracji produktu
     thisProduct.priceElem.innerHTML = thisProduct.priceSingle;
 
-    // było tab = thisProduct.defaultParamsOptions;
-    // zmieniam na tab = thisProduct.formInputs
+    // reset zdjęć do domyślnej konfiguracji produktu: 1) pętla po param 2) pętla po option
+    // console.log(thisProduct.data.params);
+    // console.log(thisProduct.imageWrapper);
 
-    const tab = thisProduct.defaultParamsOptions;
-    console.log(tab);
-    const array = Array.from(thisProduct.defaultParamsOptions)
-    console.log(array);
+    for (let paramId in thisProduct.data.params){
+      const param = thisProduct.data.params[paramId];
+      // console.log(param);
+      // console.log('paramId',paramId);
 
-    for (let el of array){
-      console.log(el);
-      console.log(array.indexOf(el));
-      console.log(array[array.indexOf(el)].checked);
-      console.log(array[array.indexOf(el)].defaultChecked);
+      for (let optionId in param.options){
+        // const option = param.options[optionId].default;
+        // console.log(option);
+        // console.log('optionId', optionId);
 
-      array[array.indexOf(el)].checked = 'true';
-      array[array.indexOf(el)].selected = 'true';
+        // wyszukanie domyślnych opcji produktu
+        const optionDefault = param.options[optionId].default == true;
+        // console.log(optionDefault);
 
+        // stworzenie stałej z obrazkami wyszukanymi po klasie złożonej z param i option
+        // potem pętla: jeśli default to dodać klasę active do obrazka, jeśli nie to usunąć
+        const visibleImages = thisProduct.imageWrapper.querySelectorAll('.' + paramId + '-' + optionId);
+        // console.log('visibleImages',visibleImages);
 
-      if(array[array.indexOf(el)].defaultChecked == 'false'){
-        array[array.indexOf(el)].checked = 'false';
-        array[array.indexOf(el)].selected = 'false';
-      };
-      // } else {
-      //   array[array.indexOf(el)].checked = 'false';
-      //   array[array.indexOf(el)].selected = 'false';
-      // };
+        for (let image of visibleImages) {
+          if(optionDefault){
+            image.classList.add(classNames.menuProduct.imageVisible);
+          } else {
+            image.classList.remove(classNames.menuProduct.imageVisible);
+          }
+        }
+      }
     }
-    // STOP
 
-    // // działą
-    // let domyslne = thisProduct.defaultParamsOptions[0].checked;
-    // console.log(domyslne);
-    // thisProduct.defaultParamsOptions[0].checked = 'true';
-    // console.log(domyslne);
-    // console.log(thisProduct.defaultParamsOptions[0]);
-    // console.log(thisProduct.defaultParamsOptions[0].checked);
-    // console.log(thisProduct.defaultParamsOptions[0].defaultChecked);
+    // reset opcji produktu do ustawień domyślnych
+    const tab = thisProduct.formInputs;
+    // console.log(tab);
+    const array = Array.from(tab);
+    // console.log(array);
 
+    // pętla po tablicy z opcjami produktu (checked i defaultChecked)
+    for (let el of array){
+      // console.log(el);
+      // console.log(array.indexOf(el));
+      // console.log(array[array.indexOf(el)].checked);
+      // console.log(array[array.indexOf(el)].defaultChecked);
+      // console.log(array[array.indexOf(el)].value);
 
+      if(array[array.indexOf(el)].defaultChecked == false){
+        array[array.indexOf(el)].checked = false;
+      } else {
+        array[array.indexOf(el)].checked = true;
+      }
+      // console.log(arrayWithChecked);
 
-    // for(let param in thisProduct.data.params){
-    //   for(let option in thisProduct.data.params[param].options){
-    //     const productDefault = thisProduct.data.params[param].options[option].default;
-    //     // console.log(thisProduct.formInputs);
-    //     console.log(productDefault);
-    //     // console.log(productDefault.hasAttribute('checked'));
-    //     // productDefault.element.setAttribute('input:checked', 'true');
-    //     // console.log(thisProduct.data.params[param].options[option]);
+      // pętla po tablicy z paramterami produktu (selected i defaultSelected)
+      const arrayOption = Array.from(thisProduct.form.querySelectorAll('select option'));
+      for (let option of arrayOption){
+        // console.log(arrayOption[arrayOption.indexOf(option)].defaultSelected);
 
-    //     // return thisProduct.formInputs;
-    //   }
-    // }
-
-    // thisProduct.processOrder();
-    // thisProduct.params[paramId].options[optionId]
-
-    // const result = app.data;
-    // console.log(result);
-
-  }*/
+        if(arrayOption[arrayOption.indexOf(option)].defaultSelected == true){
+          arrayOption[arrayOption.indexOf(option)].selected = true;
+        } else {
+          arrayOption[arrayOption.indexOf(option)].selected = false;
+        }
+      }
+    }
+  }
 }
 
 export default Product;
