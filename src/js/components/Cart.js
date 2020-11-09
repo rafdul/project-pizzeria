@@ -56,6 +56,9 @@ class Cart{
     thisCart.dom.form.addEventListener('submit', function(event){
       event.preventDefault();
       thisCart.sendOrder();
+
+      thisCart.cleanCart();
+
     });
   }
 
@@ -154,7 +157,47 @@ class Cart{
         console.log('parsedResponse', parsedResponse);
       });
     // console.log('payload.products', payload.products);
+
+  }
+
+  // resetowanie koszyka po wysłaniu zamówienia
+  cleanCart(){
+    const thisCart = this;
+    console.log(thisCart);
+
+    // zerowanie ilości i cen
+    thisCart.totalNumber = 0;
+    thisCart.subtotalPrice = 0;
+    thisCart.totalPrice = thisCart.subtotalPrice + thisCart.deliveryFee;
+    for(let key of thisCart.renderTotalsKeys){
+      for(let elem of thisCart.dom[key]){
+        elem.innerHTML = thisCart[key];
+      }
+    }
+
+    // console.log(thisCart.products);
+
+    // zerowanie produktów (najpierw czyszczę elementy dom, potem tablicę z produktami w koszyku)
+    for(let product of thisCart.products){
+      product = thisCart.dom.wrapper.querySelector('.cart__order-summary li');
+      product.remove();
+      console.log(product);
+    }
+    thisCart.products.splice(0);
+
+    // thisCart.dom.phone = thisCart.dom.wrapper.querySelector(select.cart.phone);
+    // thisCart.dom.address = thisCart.dom.wrapper.querySelector(select.cart.address);
+    // thisCart.dom.phone.innerHTML = '';
+    // thisCart.dom.address.innerHTML = '';
+
+    // zerowanie adresów
+    thisCart.dom.phone.value = '';
+    thisCart.dom.address.value = '';
+
+    // thisCart.update();
   }
 }
 
 export default Cart;
+
+
