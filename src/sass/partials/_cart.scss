@@ -154,6 +154,15 @@
       margin-bottom: ($base-size / 2);
     }
 
+    .field-error {
+      border: 2px solid red;
+    }
+
+    .form-message {
+      color: red;
+      font-style: italic;
+    }
+
   }
 
 }

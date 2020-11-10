@@ -12,6 +12,7 @@ class Cart{
 
     thisCart.getElements(element);
     thisCart.initActions();
+    thisCart.checkForm();
 
     // console.log('new Cart', thisCart);
   }
@@ -53,13 +54,18 @@ class Cart{
     thisCart.dom.productList.addEventListener('remove', function(event){
       thisCart.remove(event.detail.cartProduct);
     });
-    thisCart.dom.form.addEventListener('submit', function(event){
-      event.preventDefault();
-      thisCart.sendOrder();
 
-      thisCart.cleanCart();
+    // listener formularza wstawiłem w checkForm
+    // thisCart.dom.form.addEventListener('submit', function(event){
+    //   event.preventDefault();
 
-    });
+    //   // thisCart.validateForm();
+    //   // sendOrder przeniosłem do metody validateForm (i checkForm)
+    //   // thisCart.sendOrder();
+
+    //   // thisCart.cleanCart();
+
+    // });
   }
 
   // metoda usuwająca produkt z koszyka
@@ -158,6 +164,8 @@ class Cart{
       });
     // console.log('payload.products', payload.products);
 
+    thisCart.cleanCart();
+
   }
 
   // resetowanie koszyka po wysłaniu zamówienia
@@ -185,17 +193,124 @@ class Cart{
     }
     thisCart.products.splice(0);
 
-    // thisCart.dom.phone = thisCart.dom.wrapper.querySelector(select.cart.phone);
-    // thisCart.dom.address = thisCart.dom.wrapper.querySelector(select.cart.address);
-    // thisCart.dom.phone.innerHTML = '';
-    // thisCart.dom.address.innerHTML = '';
-
     // zerowanie adresów
     thisCart.dom.phone.value = '';
     thisCart.dom.address.value = '';
 
     // thisCart.update();
+
+    // zerowanie komunikatów o błędach
+    thisCart.dom.wrapper.querySelector('.form-message').innerHTML = '';
   }
+
+  // walidacja formularza
+  checkForm(){
+    const thisCart = this;
+
+    const inputTel = thisCart.dom.wrapper.querySelector('input[name=phone]');
+    const inputEmail = thisCart.dom.wrapper.querySelector('input[name=address]');
+    const formMessage = thisCart.dom.wrapper.querySelector('.form-message');
+
+    // function testTelLength(field, lng1){
+    //   return (field.value.length >= lng1);
+    // }
+    function testTel(field){
+      const regTel = /[0-9]{9}/;
+      return regTel.test(field.value);
+    }
+    function testEmail(field){
+      const regEmail = /[a-zA-Z_0-9-]{3,}@[a-zA-Z0-9-]{2,}[.]{1}[a-zA-Z]{2,}/;
+      return regEmail.test(field.value);
+    }
+    function markFieldError(field, show){
+      if(show){
+        field.classList.add('field-error');
+      } else {
+        field.classList.remove('field-error');
+      }
+    }
+
+    inputTel.addEventListener('input', function(event){
+      // markFieldError(event.target, !testTelLength(event.target));
+      markFieldError(event.target, !testTel(event.target));
+      console.log(event.target);
+    });
+    inputEmail.addEventListener('input', function(event){
+      markFieldError(event.target, !testEmail(event.target));
+      console.log(event.target);
+    });
+
+    thisCart.dom.form.addEventListener('submit', function(event){
+      event.preventDefault();
+
+      let errors = [];
+      console.log(errors);
+
+      // schować błędy
+      for(const el of [inputTel, inputEmail]){
+        markFieldError(el, false);
+      }
+      // ewentualnie testować i zaznaczać pola
+      // if(!testTelLength(inputTel, 9)){
+      //   markFieldError(inputTel, true);
+      //   errors.push('Wypełnij poprawnie numer telefonu (od 9 do 14 znaków)');
+      // }
+      if(!testTel(inputTel)){
+        markFieldError(inputTel, true);
+        errors.push('Wypełnij poprawnie numer telefonu (od 9 do 14 znaków, tylko cyfry oraz +)');
+      }
+      if(!testEmail(inputEmail)){
+        markFieldError(inputEmail, true);
+        errors.push('Wypełnij poprawnie adres email (np: jan@abc.pl)');
+      }
+
+      if(!errors.length){
+        thisCart.sendOrder();
+      } else {
+        formMessage.innerHTML =
+          `<h3 class="errors-title">Popraw błędy</h3>
+          <ul class="errors-list">
+            ${errors.map(error => `<li>${error}</li>`).join('')}
+          </ul>`;
+      }
+    });
+  }
+
+  // walidacja formularza
+  // validateForm(){
+  //   const thisCart = this;
+
+  //   const inputTel = thisCart.dom.wrapper.querySelector('input[name=phone]');
+  //   const inputEmail = thisCart.dom.wrapper.querySelector('input[name=address]');
+  //   const formMessage = thisCart.dom.wrapper.querySelector('.form-message');
+
+  //   let errors = [];
+  //   console.log(errors);
+
+  //   // działa
+  //   const regTel = /[+0-9]{9,14}/;
+  //   // if (inputTel.value.length <= 9 || inputTel.value.length >= 14){
+  //   //   errors.push('Wypełnij poprawnie numer telefonu (od 9 do 14 znaków)');
+  //   // }
+  //   if(inputTel.value.length < 9 || inputTel.value.length > 14 || !regTel.test(inputTel.value)){
+  //     errors.push('Wypełnij poprawnie numer telefonu (od 9 do 14 znaków, tylko cyfry oraz +)');
+  //   }
+  //   const regEmail = /[a-zA-Z_0-9-]{3,}@[a-zA-Z0-9-]{2,}[.]{1}[a-zA-Z]{2,}/;
+  //   if(!regEmail.test(inputEmail.value)){
+  //     errors.push('Wypełnij poprawnie adres email (np: jan@abc.pl)');
+  //   }
+
+  //   if(errors.length == 0){
+  //     thisCart.sendOrder();
+  //   } else {
+  //     formMessage.innerHTML =
+  //       `<h3 class="errors-title">Popraw błędy</h3>
+  //       <ul class="errors-list">
+  //         ${errors.map(error => `<li>${error}</li>`).join('')}
+  //       </ul>`;
+  //   }
+  // }
+
 }
 
 export default Cart;

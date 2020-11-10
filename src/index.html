@@ -52,8 +52,9 @@
                 </li>
               </ul>
               <div class="cart__order-confirmation">
-                <input type="tel" name="phone" placeholder="Your phone">
-                <input type="text" name="address" placeholder="Your address">
+                <div class="form-message"></div>
+                <input type="tel" name="phone" placeholder="Your phone" maxlength="14" required>
+                <input type="text" name="address" placeholder="Your address" required>
                 <button type="submit" class="btn-secondary">Order</button>
               </div>
             </form>
