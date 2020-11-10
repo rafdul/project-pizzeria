@@ -12,7 +12,7 @@ class AmountWidget extends BaseWidget{
     // thisWidget.element.setAttribute('data-min', settings.amountWidget.defaultMin);
     // thisWidget.element.setAttribute('data-max', settings.amountWidget.defaultMax);
     // thisWidget.setValue(settings.amountWidget.defaultValue); //to rozwiązanie uniemożliwia poprawne działanie initAmountWidget w CartProduct
-    // thisWidget.setValue(thisWidget.input.value); // tym zajmuje się teraz BaseWidget
+    thisWidget.value = thisWidget.dom.input.value; // tym zajmuje się teraz BaseWidget
     thisWidget.initActions();
 
     // console.log('AmountWidget:', thisWidget);
