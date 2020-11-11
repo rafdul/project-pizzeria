@@ -12,6 +12,8 @@ class Booking{
     thisBooking.render(containerOfBooking);
     thisBooking.initWidgets();
     thisBooking.getData();
+
+
   }
 
   // pobieranie danych z API
@@ -170,6 +172,7 @@ class Booking{
         table.classList.remove(classNames.booking.tableBooked);
       }
     }
+
   }
 
   render(containerOfBooking){
@@ -211,6 +214,16 @@ class Booking{
     thisBooking.dom.wrapper.addEventListener('updated', function(){
       thisBooking.updateDOM();
     });
+
+    // Wybór stolika za pomocą kliknięcia
+    for(let table of thisBooking.dom.tables){
+      if(!table.classList.contains(classNames.booking.tableBooked)){
+        table.addEventListener('click', function(event){
+          event.preventDefault();
+          table.classList.add(classNames.booking.tableBooked);
+        });
+      }
+    }
   }
 
 }
