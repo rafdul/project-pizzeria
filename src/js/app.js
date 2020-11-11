@@ -1,4 +1,4 @@
-import {classNames, templates, settings, select} from './settings.js';
+import {classNames, /*templates,*/ settings, select} from './settings.js';
 import Product from './components/Product.js';
 import Cart from './components/Cart.js';
 import Booking from './components/Booking.js';
@@ -90,7 +90,7 @@ const app = {
         return rawResponse.json();
       })
       .then(function(parsedResponse){
-        console.log('parsedResponse', parsedResponse);
+        // console.log('parsedResponse', parsedResponse);
 
         // save parsedResponse as thisApp.data.products
         thisApp.data.products = parsedResponse;
@@ -104,7 +104,7 @@ const app = {
         return parsedResponse;
 
       });
-    console.log('thisApp.data', JSON.stringify(thisApp.data));
+    // console.log('thisApp.data', JSON.stringify(thisApp.data));
 
   },
 
@@ -134,11 +134,11 @@ const app = {
 
   init: function(){
     const thisApp = this;
-    console.log('*** App starting ***');
-    console.log('thisApp:', thisApp);
-    console.log('classNames:', classNames);
-    console.log('settings:', settings);
-    console.log('templates:', templates);
+    // console.log('*** App starting ***');
+    // console.log('thisApp:', thisApp);
+    // console.log('classNames:', classNames);
+    // console.log('settings:', settings);
+    // console.log('templates:', templates);
     thisApp.initPages();
     thisApp.initData();
     // thisApp.initMenu();
