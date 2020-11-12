@@ -73,7 +73,6 @@ class Cart{
       // console.log(event.target);
     });
 
-    // listener formularza wstawiłem w checkForm
     thisCart.dom.form.addEventListener('submit', function(event){
       event.preventDefault();
 

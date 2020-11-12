@@ -206,7 +206,7 @@
   "event": [
     {
       "id": 1,
-      "date": "2020-11-12",
+      "date": "2020-11-13",
       "hour": "12:30",
       "table": 1,
       "repeat": false,
@@ -258,9 +258,9 @@
   "booking": [
     {
       "id": 1,
-      "date": "2020-11-12",
-      "hour": "16:00",
-      "table": 2,
+      "date": "2020-11-14",
+      "hour": "18:00",
+      "table": 1,
       "repeat": "daily",
       "duration": 2,
       "ppl": 3,

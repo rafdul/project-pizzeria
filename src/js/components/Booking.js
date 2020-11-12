@@ -125,6 +125,7 @@ class Booking{
     }
 
     const startHour = utils.hourToNumber(hour);
+    // console.log(startHour);
 
     for(let hourBlock = startHour; hourBlock < startHour + duration; hourBlock +=0.5){
       // console.log('loop', hourBlock);
@@ -175,6 +176,60 @@ class Booking{
 
   }
 
+  // wysyłanie rezerwacji do API
+  sendBooking(){
+    const thisBooking = this;
+    // console.log('start sendBooking');
+
+    if(!thisBooking.selectedTable){
+      alert('Proszę wybierz stolik');
+      return;
+    }
+
+    const url = settings.db.url + '/' + settings.db.booking;
+    // console.log('url', url);
+
+    const payload = {
+      phone: thisBooking.dom.phone.value,
+      address: thisBooking.dom.address.value,
+      table: parseInt(thisBooking.selectedTable),
+      date: thisBooking.datePicker.value,
+      hour: thisBooking.hourPicker.value,
+      duration: thisBooking.hoursAmount.value,
+      ppl: thisBooking.peopleAmount.value,
+      starters: [],
+    };
+
+
+    console.log(payload);
+
+    for(let starter of thisBooking.dom.starters){
+      if(starter.checked == true){
+        payload.starters.push(starter.value);
+      }
+    }
+
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    };
+
+    fetch(url, options)
+      .then(function(response){
+        return response.json();
+      })
+      .then(function(parsedResponse){
+        thisBooking.makeBooked(parsedResponse.date, parsedResponse.hour, parsedResponse.duration, parsedResponse.table);
+
+        thisBooking.updateDOM();
+        console.log('parsedResponse', parsedResponse);
+      });
+
+  }
+
   render(containerOfBooking){
     const thisBooking = this;
 
@@ -200,6 +255,21 @@ class Booking{
     thisBooking.dom.hourPicker = thisBooking.dom.wrapper.querySelector(select.widgets.hourPicker.wrapper);
 
     thisBooking.dom.tables = thisBooking.dom.wrapper.querySelectorAll(select.booking.tables);
+
+    // thisBooking.dom.btnBookTable = thisBooking.dom.wrapper.querySelector('.order-confirmation button');
+    thisBooking.dom.form = thisBooking.dom.wrapper.querySelector(select.booking.form);
+    // console.log(thisBooking.dom.form);
+
+    thisBooking.dom.datePickerInput = thisBooking.dom.wrapper.querySelector(select.widgets.datePicker.input);
+    // thisBooking.dom.hourPickerInput = thisBooking.dom.wrapper.querySelector(select.widgets.hourPicker.input);
+    thisBooking.dom.hourPickerOutput = thisBooking.dom.wrapper.querySelector(select.widgets.hourPicker.output);
+    // console.log('thisBooking.dom.datePickerInput', thisBooking.dom.datePickerInput);
+    // console.log('thisBooking.dom.hourPickerInput', thisBooking.dom.hourPickerInput);
+    // console.log('thisBooking.dom.hourPickerOutput', thisBooking.dom.hourPickerOutput);
+
+    thisBooking.dom.phone = thisBooking.dom.wrapper.querySelector(select.booking.phone);
+    thisBooking.dom.address = thisBooking.dom.wrapper.querySelector(select.booking.address);
+    thisBooking.dom.starters = thisBooking.dom.wrapper.querySelectorAll(select.booking.starters);
   }
 
   initWidgets(){
@@ -217,13 +287,26 @@ class Booking{
 
     // Wybór stolika za pomocą kliknięcia
     for(let table of thisBooking.dom.tables){
-      if(!table.classList.contains(classNames.booking.tableBooked)){
-        table.addEventListener('click', function(event){
-          event.preventDefault();
+      table.addEventListener('click', function(event){
+        event.preventDefault();
+        if(table.classList.contains(classNames.booking.tableBooked)){
+          return;
+        } else {
           table.classList.add(classNames.booking.tableBooked);
-        });
-      }
+          thisBooking.selectedTable = table.dataset.table;
+          console.log(thisBooking.selectedTable);
+        }
+      });
     }
+
+    // Wysyłka formularza rezerwacji (Book Table)
+    thisBooking.dom.form.addEventListener('submit', function(event){
+      event.preventDefault();
+      // console.log(event);
+
+      thisBooking.sendBooking();
+    });
+
   }
 
 }
