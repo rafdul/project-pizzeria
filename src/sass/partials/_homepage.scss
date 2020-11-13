@@ -5,13 +5,48 @@
 
 .wrapper{
   margin: auto 0;
-  padding: 72px 48px;
+  padding: 72px 48px 36px 48px;
+
+  a {
+    padding: 0;
+
+    p {
+      transition: 0.5s;
+      top: 30%;
+    }
+
+    p:nth-child(2) {
+      opacity: 0;
+      font-family: $font-text;
+      font-size: 14px;
+      font-weight: $font-light;
+      text-transform: initial;
+      top: 100px;
+    }
+
+    &:hover {
+      p:nth-child(1) {
+        transform: translate(-50%, -20px);
+      }
+
+      p:nth-child(2) {
+        opacity: 1;
+        transform: translate(-50%, -30px);
+      }
+    }
+  }
 }
 
 .navigation-box {
   padding-right: 0 !important;
   padding-left: 0 !important;
+}
 
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
 }
 
 .home-btn {
@@ -41,16 +76,7 @@
   height: 119px;
   position: relative;
 
-
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 4px;
-  }
 }
-
 
 .big-btn {
   padding: 72px 48px;
@@ -68,6 +94,45 @@
     font-size: 14px;
     color: $color-light;
   }
-
-
 }
+
+.carousel-image {
+  padding: 0;
+  width: 193px;
+  height: 193px;
+}
+
+.main-carousel {
+  padding-right: 0;
+}
+
+.carousel-cell {
+  width: 100%;
+  padding-left: 10px;
+
+  p {
+    font-size: 14px;
+  }
+
+  p:nth-child(1) {
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  p:nth-child(2) {
+    font-weight: 400;
+  }
+
+  p:nth-child(3){
+    font-weight: 400;
+    font-style: italic;
+  }
+}
+
+.flickity-page-dots {
+  text-align: left;
+  left: 50px;
+}
+
+// .opinion-card chyba niepotrzebne
+// .image chyba niepotrzebne
