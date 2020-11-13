@@ -69,7 +69,7 @@ export const select = {
     starters: '[name="starter"]'
   },
   nav: {
-    links: '.main-nav a',
+    links: '.main-nav a, .navigation a',
   },
 };
 

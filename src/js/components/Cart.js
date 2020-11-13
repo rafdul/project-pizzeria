@@ -130,9 +130,9 @@ class Cart{
 
     thisCart.totalPrice = thisCart.subtotalPrice + thisCart.deliveryFee;
 
-    console.log('total number', thisCart.totalNumber);
-    console.log('subtotal price', thisCart.subtotalPrice);
-    console.log('total price', thisCart.totalPrice);
+    // console.log('total number', thisCart.totalNumber);
+    // console.log('subtotal price', thisCart.subtotalPrice);
+    // console.log('total price', thisCart.totalPrice);
 
     for(let key of thisCart.renderTotalsKeys){
       for(let elem of thisCart.dom[key]){

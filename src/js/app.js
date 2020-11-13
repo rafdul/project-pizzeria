@@ -27,7 +27,9 @@ const app = {
 
     // uruchomienie metody aktywacji podstrony pierwszej (czyli o indeksie 0 w tablicy)
     // znalezionej w selektorze thisApp.pages; konieczne wydobycie id, bo w html tylko tym atrybutem są one różnicowane
+
     thisApp.activatePage(pageMatchingHash);
+    // thisApp.activatePage(thisApp.pages[0].id);
 
     for(let link of thisApp.navLinks){
       link.addEventListener('click', function(event){
@@ -68,6 +70,7 @@ const app = {
         link.getAttribute('href') == '#' + pageId
       );
     }
+    console.log(thisApp.navLinks);
   },
 
   initMenu: function(){
