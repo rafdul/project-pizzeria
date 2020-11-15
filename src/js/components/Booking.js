@@ -286,18 +286,33 @@ class Booking{
     });
 
     // Wybór stolika za pomocą kliknięcia
+    // for(let table of thisBooking.dom.tables){
+    //   table.addEventListener('click', function(event){
+    //     event.preventDefault();
+    //     if(table.classList.contains(classNames.booking.tableBooked)){
+    //       return;
+    //     } else {
+    //       table.classList.add(classNames.booking.tableBooked);
+    //       thisBooking.selectedTable = table.dataset.table;
+    //       console.log(thisBooking.selectedTable);
+    //     }
+    //   });
+    // }
+
     for(let table of thisBooking.dom.tables){
       table.addEventListener('click', function(event){
         event.preventDefault();
-        if(table.classList.contains(classNames.booking.tableBooked)){
-          return;
-        } else {
+        if(!table.classList.contains(classNames.booking.tableBooked)){
           table.classList.add(classNames.booking.tableBooked);
           thisBooking.selectedTable = table.dataset.table;
           console.log(thisBooking.selectedTable);
+        } else {
+          return;
         }
       });
     }
+
+
 
     // Wysyłka formularza rezerwacji (Book Table)
     thisBooking.dom.form.addEventListener('submit', function(event){
