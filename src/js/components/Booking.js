@@ -85,7 +85,7 @@ class Booking{
 
   }
 
-  // tworzy obikt, w którym znajdzie się infomracja o zajętych stolikach
+  // tworzy obiekt, w którym znajdzie się infomracja o zajętych stolikach
   // to ten obiekt będzie przeglądał skrypt sprawdzając, czy stolik w danym terminie jest wolny
   parseData(bookings, eventsCurrent, eventsRepeat){
     const thisBooking = this;
@@ -111,7 +111,7 @@ class Booking{
         }
       }
     }
-    // console.log('thisBooking.booked', thisBooking.booked);
+    console.log('thisBooking.booked', thisBooking.booked);
 
     thisBooking.updateDOM();
   }
@@ -127,6 +127,7 @@ class Booking{
     const startHour = utils.hourToNumber(hour);
     // console.log(startHour);
 
+    // BLOK DZIAŁAJĄCY
     for(let hourBlock = startHour; hourBlock < startHour + duration; hourBlock +=0.5){
       // console.log('loop', hourBlock);
 
@@ -137,7 +138,39 @@ class Booking{
 
       thisBooking.booked[date][hourBlock].push(table);
     }
+
+    // for(let hourBlock = startHour; hourBlock < startHour + duration; hourBlock +=0.5){
+    //   // console.log('loop', hourBlock);
+    //   // console.log('hourBlock', hourBlock);
+    //   // console.log('startHour', startHour);
+    //   // console.log('duration', duration);
+
+    //   if (startHour + duration > 24) {
+    //     alert ('Restauracja pracuje tylko do godz. 24. Zmień termin rezerwacji');
+    //     return;
+    //   } else {
+    //     if(typeof thisBooking.booked[date][hourBlock] == 'undefined'){
+    //       thisBooking.booked[date][hourBlock] = [];
+    //       // console.log(thisBooking.booked[date][startHour]);
+    //     }
+    //     thisBooking.booked[date][hourBlock].push(table);
+    //   }
+    // }
+
   }
+
+  // checkOpenOrClose(){
+  //   const thisBooking = this;
+
+  //   const startHour = utils.hourToNumber(hour);
+
+  //   if (startHour + duration > 24) {
+  //     alert ('Restauracja pracuje tylko do godz. 24. Zmień termin rezerwacji');
+  //     return;
+  //   } else {
+  //     thisBooking.makeBooked();
+  //   }
+  // }
 
   updateDOM(){
     const thisBooking = this;
@@ -183,6 +216,14 @@ class Booking{
 
     if(!thisBooking.selectedTable){
       alert('Proszę wybierz stolik');
+      return;
+    }
+
+    // console.log(thisBooking.hourPicker.value);
+    // console.log(utils.hourToNumber(thisBooking.hourPicker.value));
+    // console.log(utils.hourToNumber(thisBooking.hourPicker.value) + thisBooking.hoursAmount.value);
+    if (utils.hourToNumber(thisBooking.hourPicker.value) + thisBooking.hoursAmount.value > 24){
+      alert ('Restauracja pracuje tylko do godz. 24. Zmień termin rezerwacji');
       return;
     }
 
