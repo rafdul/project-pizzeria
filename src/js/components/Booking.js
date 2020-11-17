@@ -12,8 +12,6 @@ class Booking{
     thisBooking.render(containerOfBooking);
     thisBooking.initWidgets();
     thisBooking.getData();
-
-
   }
 
   // pobieranie danych z API
@@ -112,6 +110,11 @@ class Booking{
       }
     }
     console.log('thisBooking.booked', thisBooking.booked);
+    console.log(thisBooking.booked['2020-11-17']);
+    console.log(thisBooking.booked['2020-11-17']['16']);
+    console.log(thisBooking.booked['2020-11-17']['16'].includes(2));
+
+
 
     thisBooking.updateDOM();
   }
@@ -121,13 +124,12 @@ class Booking{
 
     if(typeof thisBooking.booked[date] == 'undefined'){
       thisBooking.booked[date] = {};
-      // console.log(thisBooking.booked[date]);
+      // console.log(thisBooking.booked);
     }
 
     const startHour = utils.hourToNumber(hour);
     // console.log(startHour);
 
-    // BLOK DZIAŁAJĄCY
     for(let hourBlock = startHour; hourBlock < startHour + duration; hourBlock +=0.5){
       // console.log('loop', hourBlock);
 
@@ -137,43 +139,44 @@ class Booking{
       }
 
       thisBooking.booked[date][hourBlock].push(table);
+      // console.log(thisBooking.booked[date][hourBlock] );
+
     }
-
-    // for(let hourBlock = startHour; hourBlock < startHour + duration; hourBlock +=0.5){
-    //   // console.log('loop', hourBlock);
-    //   // console.log('hourBlock', hourBlock);
-    //   // console.log('startHour', startHour);
-    //   // console.log('duration', duration);
-
-    //   if (startHour + duration > 24) {
-    //     alert ('Restauracja pracuje tylko do godz. 24. Zmień termin rezerwacji');
-    //     return;
-    //   } else {
-    //     if(typeof thisBooking.booked[date][hourBlock] == 'undefined'){
-    //       thisBooking.booked[date][hourBlock] = [];
-    //       // console.log(thisBooking.booked[date][startHour]);
-    //     }
-    //     thisBooking.booked[date][hourBlock].push(table);
-    //   }
-    // }
 
   }
 
-  // checkOpenOrClose(){
-  //   const thisBooking = this;
-
-  //   const startHour = utils.hourToNumber(hour);
-
-  //   if (startHour + duration > 24) {
-  //     alert ('Restauracja pracuje tylko do godz. 24. Zmień termin rezerwacji');
-  //     return;
-  //   } else {
-  //     thisBooking.makeBooked();
-  //   }
-  // }
-
   updateDOM(){
     const thisBooking = this;
+
+
+    for (let table of thisBooking.dom.tables) {
+      if (table.dataset.table == thisBooking.selectedTable) {
+
+        const startHour = utils.hourToNumber(thisBooking.hourPicker.value);
+        if (startHour + thisBooking.hoursAmount.value > settings.hours.close) {
+          alert('Restauracja pracuje tylko do godz. 24. Zmień termin rezerwacji');
+          table.classList.remove('active');
+          return;
+        } else {
+          for (let hourBlock = startHour; hourBlock < startHour + thisBooking.hoursAmount.value; hourBlock += 0.5) {
+            if (typeof thisBooking.booked[thisBooking.datePicker.value][hourBlock] == 'undefined') {
+              table.classList.add('active');
+            } else if (thisBooking.booked[thisBooking.datePicker.value][hourBlock].includes(parseInt(thisBooking.selectedTable))) {
+              alert('Wybrany stolik jest już zajęty. Zmień godziny rezerwacji');
+              table.classList.remove('active');
+              return;
+            } else {
+              table.classList.add('active');
+            }
+          }
+        }
+      } else {
+        table.classList.remove('active');
+      }
+    }
+
+
+
 
     thisBooking.date = thisBooking.datePicker.value;
     thisBooking.hour = utils.hourToNumber(thisBooking.hourPicker.value);
@@ -209,23 +212,59 @@ class Booking{
 
   }
 
+  // checkTableBooked(){
+  //   const thisBooking = this;
+
+
+  //   for(let hourBlock = utils.hourToNumber(thisBooking.hourPicker.value); hourBlock < utils.hourToNumber(thisBooking.hourPicker.value) + thisBooking.hoursAmount.value; hourBlock +=0.5){
+  //     console.log(hourBlock);
+  //     console.log(thisBooking.selectedTable);
+  //     console.log(thisBooking.booked[thisBooking.date][hourBlock].includes(parseInt(thisBooking.selectedTable)));
+  //     if(thisBooking.booked[thisBooking.date][hourBlock].includes(parseInt(thisBooking.selectedTable)) == true){
+  //       console.log(thisBooking.selectedTable);
+  //       console.log(thisBooking.booked[thisBooking.date][thisBooking.hour].includes(thisBooking.selectedTable));
+  //       alert ('Wybrany stolik jest już zajęty. Zmień godziny rezerwacji');
+
+  //       // thisBooking.selectedTable.classList.remove(classNames.booking.tableBooked);
+
+  //       return;
+  //     }
+
+  //   }
+  // }
+
   // wysyłanie rezerwacji do API
   sendBooking(){
     const thisBooking = this;
     // console.log('start sendBooking');
 
-    if(!thisBooking.selectedTable){
-      alert('Proszę wybierz stolik');
-      return;
-    }
+    // const startBooked = utils.hourToNumber(thisBooking.hourPicker.value);
+    // const durationBooked = thisBooking.hoursAmount.value;
+    // const tableBooked = thisBooking.selectedTable;
 
-    // console.log(thisBooking.hourPicker.value);
-    // console.log(utils.hourToNumber(thisBooking.hourPicker.value));
-    // console.log(utils.hourToNumber(thisBooking.hourPicker.value) + thisBooking.hoursAmount.value);
-    if (utils.hourToNumber(thisBooking.hourPicker.value) + thisBooking.hoursAmount.value > 24){
-      alert ('Restauracja pracuje tylko do godz. 24. Zmień termin rezerwacji');
-      return;
-    }
+    // // Komunikat, jeśli stolik nie został wybrany
+    // if(!thisBooking.selectedTable){
+    //   alert('Proszę wybierz stolik');
+    //   return;
+    // }
+
+    // // Komunikat, jeśli długość rezerwacji wykracza poza godzinę zamknięcia restauracji (g. 24)
+    // if (startBooked + durationBooked > 24){
+    //   alert ('Restauracja pracuje tylko do godz. 24. Zmień termin rezerwacji');
+    //   return;
+    // }
+
+    // // Komunikat, jeśli rezerwacja koliduje z już istniejącą rezerwacją
+    // for(let hourBlock = startBooked; hourBlock < startBooked + durationBooked; hourBlock +=0.5){
+    //   console.log(hourBlock);
+    //   // console.log(parseInt(thisBooking.selectedTable));
+    //   console.log(thisBooking.booked[thisBooking.date][hourBlock].includes(parseInt(tableBooked)));
+    //   if(thisBooking.booked[thisBooking.date][hourBlock].includes(parseInt(tableBooked)) == true){
+    //     console.log(thisBooking.booked[thisBooking.date][thisBooking.hour].includes(parseInt(tableBooked)));
+    //     alert ('Wybrany stolik jest już zajęty. Zmień godziny rezerwacji');
+    //     return;
+    //   }
+    // }
 
     const url = settings.db.url + '/' + settings.db.booking;
     // console.log('url', url);
@@ -326,34 +365,18 @@ class Booking{
       thisBooking.updateDOM();
     });
 
-    // Wybór stolika za pomocą kliknięcia
     // for(let table of thisBooking.dom.tables){
     //   table.addEventListener('click', function(event){
     //     event.preventDefault();
-    //     if(table.classList.contains(classNames.booking.tableBooked)){
-    //       return;
-    //     } else {
+    //     if(!table.classList.contains(classNames.booking.tableBooked)){
     //       table.classList.add(classNames.booking.tableBooked);
     //       thisBooking.selectedTable = table.dataset.table;
     //       console.log(thisBooking.selectedTable);
+    //     } else {
+    //       return;
     //     }
     //   });
     // }
-
-    for(let table of thisBooking.dom.tables){
-      table.addEventListener('click', function(event){
-        event.preventDefault();
-        if(!table.classList.contains(classNames.booking.tableBooked)){
-          table.classList.add(classNames.booking.tableBooked);
-          thisBooking.selectedTable = table.dataset.table;
-          console.log(thisBooking.selectedTable);
-        } else {
-          return;
-        }
-      });
-    }
-
-
 
     // Wysyłka formularza rezerwacji (Book Table)
     thisBooking.dom.form.addEventListener('submit', function(event){
@@ -362,6 +385,20 @@ class Booking{
 
       thisBooking.sendBooking();
     });
+
+
+
+    for (let table of thisBooking.dom.tables) {
+      table.addEventListener('click', function () {
+
+        if (table.classList.contains(classNames.booking.tableBooked)) {
+          return;
+        }
+
+        thisBooking.selectedTable = table.dataset.table;
+        thisBooking.updateDOM();
+      });
+    }
 
   }
 

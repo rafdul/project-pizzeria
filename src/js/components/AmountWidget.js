@@ -2,17 +2,20 @@ import {settings, select} from '../settings.js';
 import BaseWidget from'./BaseWidget.js';
 
 class AmountWidget extends BaseWidget{
-  constructor(element){
+  constructor(element, parseHalf){
     super(element, settings.amountWidget.defaultValue);
 
     const thisWidget = this;
+
+    thisWidget.parseHalf = parseHalf ? true : false;
 
     thisWidget.getElements(element);
     // thisWidget.value = settings.amountWidget.defaultValue; // tym zajmuje się teraz BaseWidget
     // thisWidget.element.setAttribute('data-min', settings.amountWidget.defaultMin);
     // thisWidget.element.setAttribute('data-max', settings.amountWidget.defaultMax);
     // thisWidget.setValue(settings.amountWidget.defaultValue); //to rozwiązanie uniemożliwia poprawne działanie initAmountWidget w CartProduct
-    thisWidget.value = thisWidget.dom.input.value; // tym zajmuje się teraz BaseWidget
+
+    // thisWidget.value = thisWidget.dom.input.value; // tym zajmuje się teraz BaseWidget
     thisWidget.initActions();
 
     // console.log('AmountWidget:', thisWidget);
@@ -81,6 +84,9 @@ class AmountWidget extends BaseWidget{
     return !isNaN(value)
     && value >= settings.amountWidget.defaultMin
     && value <= settings.amountWidget.defaultMax;
+    // w pliku settings.js zmieniłem settings.amountWidget.defaultMin z 1 na 0.5
+    // w initActions jest warunek, więc 0.5 pojawi się tylko w amount hours
+    // (w pozostałych wartością min. będzie 1)
   }
 
   // służy, aby bieżąca wartość widgetu została wyświetlona na stronie (wyrenderowana)
@@ -90,9 +96,18 @@ class AmountWidget extends BaseWidget{
     thisWidget.dom.input.value = thisWidget.value;
   }
 
+  // Number w celu wprowadzenia "skoku" co-pół-godziny w amount hours
+  // domyślny parseInt zaokrąglał do pełnej wartości
+  parseValue(value){
+    return Number(value);
+  }
+
   // metoda aktywujące buttony + i - w widgecie
   initActions(){
     const thisWidget = this;
+
+    // console.log(thisWidget.dom.input.getAttribute('value'));
+    // console.log(Number(thisWidget.dom.input.getAttribute('value')));
 
     thisWidget.dom.input.addEventListener('change', function(){
       // thisWidget.setValue(thisWidget.dom.input.value);
@@ -100,15 +115,26 @@ class AmountWidget extends BaseWidget{
       // console.log(event);
       // console.log(thisWidget.dom.input.value);
     });
+
     thisWidget.dom.linkDecrease.addEventListener('click', function(event){
       event.preventDefault();
-      thisWidget.setValue(thisWidget.value - 1);
+      // thisWidget.setValue(thisWidget.value - 1);
+      if(Number(thisWidget.dom.input.getAttribute('value')) == 0.5) {
+        thisWidget.setValue(thisWidget.value - 0.5);
+      } else {
+        thisWidget.setValue(thisWidget.value - 1);
+      }
       // thisWidget.setValue(thisWidget.value -= 1 && thisWidget.value > settings.amountWidget.defaultMin);
-      // console.log(event);
     });
+
     thisWidget.dom.linkIncrease.addEventListener('click', function(event){
       event.preventDefault();
-      thisWidget.setValue(thisWidget.value + 1);
+      // thisWidget.setValue(thisWidget.value + 1);
+      if(Number(thisWidget.dom.input.getAttribute('value')) == 0.5) {
+        thisWidget.setValue(thisWidget.value + 0.5);
+      } else {
+        thisWidget.setValue(thisWidget.value + 1);
+      }
       // thisWidget.setValue(thisWidget.value += 1 && thisWidget.value < settings.amountWidget.defaultMax);
     });
   }
