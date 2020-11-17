@@ -7,7 +7,7 @@ class AmountWidget extends BaseWidget{
 
     const thisWidget = this;
 
-    // thisWidget.parseHalf = parseHalf ? true : false;
+    thisWidget.parseHalf = parseHalf ? true : false;
 
     thisWidget.getElements(element);
     // thisWidget.value = settings.amountWidget.defaultValue; // tym zajmuje się teraz BaseWidget
@@ -96,45 +96,34 @@ class AmountWidget extends BaseWidget{
     thisWidget.dom.input.value = thisWidget.value;
   }
 
-  // Number w celu wprowadzenia "skoku" co-pół-godziny w amount hours
+  // parseFloat w celu wprowadzenia "skoku" co-pół-godziny w amount hours
   // domyślny parseInt zaokrąglał do pełnej wartości
   parseValue(value){
-    return Number(value);
+    const thisWidget = this;
+
+    return thisWidget.parseHalf ? parseFloat(value) : parseInt(value);
   }
 
   // metoda aktywujące buttony + i - w widgecie
   initActions(){
     const thisWidget = this;
 
-    // console.log(thisWidget.dom.input.getAttribute('value'));
-    // console.log(Number(thisWidget.dom.input.getAttribute('value')));
-    thisWidget.parseHalf = thisWidget.dom.input.getAttribute('value');
-
     thisWidget.dom.input.addEventListener('change', function(){
       // thisWidget.setValue(thisWidget.dom.input.value);
       // console.log(event);
       // console.log(thisWidget.dom.input.value);
+      thisWidget.value = thisWidget.dom.input.value;
     });
 
     thisWidget.dom.linkDecrease.addEventListener('click', function(event){
       event.preventDefault();
-      // thisWidget.setValue(thisWidget.value - 1);
-      if(Number(thisWidget.dom.input.getAttribute('value')) == 0.5) {
-        thisWidget.setValue(thisWidget.value - 0.5);
-      } else {
-        thisWidget.setValue(thisWidget.value - 1);
-      }
+      thisWidget.setValue(thisWidget.value - (thisWidget.parseHalf ? 0.5 : 1));
       // thisWidget.setValue(thisWidget.value -= 1 && thisWidget.value > settings.amountWidget.defaultMin);
     });
 
     thisWidget.dom.linkIncrease.addEventListener('click', function(event){
       event.preventDefault();
-      // thisWidget.setValue(thisWidget.value + 1);
-      if(Number(thisWidget.dom.input.getAttribute('value')) == 0.5) {
-        thisWidget.setValue(thisWidget.value + 0.5);
-      } else {
-        thisWidget.setValue(thisWidget.value + 1);
-      }
+      thisWidget.setValue(thisWidget.value + (thisWidget.parseHalf ? 0.5 : 1));
       // thisWidget.setValue(thisWidget.value += 1 && thisWidget.value < settings.amountWidget.defaultMax);
     });
   }

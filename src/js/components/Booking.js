@@ -17,6 +17,7 @@ class Booking{
     thisBooking.getData();
   }
 
+
   // pobieranie danych z API
   getData(){
     const thisBooking = this;
@@ -82,9 +83,8 @@ class Booking{
         // console.log(eventsRepeat);
         thisBooking.parseData(bookings, eventsCurrent, eventsRepeat);
       });
-
-
   }
+
 
   // tworzy obiekt, w którym znajdzie się infomracja o zajętych stolikach
   // to ten obiekt będzie przeglądał skrypt sprawdzając, czy stolik w danym terminie jest wolny
@@ -113,15 +113,15 @@ class Booking{
       }
     }
     console.log('thisBooking.booked', thisBooking.booked);
-    console.log(thisBooking.booked['2020-11-17']);
-    console.log(thisBooking.booked['2020-11-17']['16']);
-    console.log(thisBooking.booked['2020-11-17']['16'].includes(2));
-
-
+    // console.log(thisBooking.booked['2020-11-17']);
+    // console.log(thisBooking.booked['2020-11-17']['16']);
+    // console.log(thisBooking.booked['2020-11-17']['16'].includes(2));
 
     thisBooking.updateDOM();
   }
 
+
+  // tworzy tablicę z rezerwacjami
   makeBooked(date, hour, duration, table){
     const thisBooking = this;
 
@@ -143,43 +143,12 @@ class Booking{
 
       thisBooking.booked[date][hourBlock].push(table);
       // console.log(thisBooking.booked[date][hourBlock] );
-
     }
-
   }
 
+  // dodaje / usuwa klasy booked przy stolikach (na oznaczenie rezerwacji)
   updateDOM(){
     const thisBooking = this;
-
-
-    for (let table of thisBooking.dom.tables) {
-      if (table.dataset.table == thisBooking.selectedTable) {
-
-        const startHour = utils.hourToNumber(thisBooking.hourPicker.value);
-        if (startHour + thisBooking.hoursAmount.value > settings.hours.close) {
-          alert('Restauracja pracuje tylko do godz. 24. Zmień termin rezerwacji');
-          table.classList.remove('active');
-          return;
-        } else {
-          for (let hourBlock = startHour; hourBlock < startHour + thisBooking.hoursAmount.value; hourBlock += 0.5) {
-            if (typeof thisBooking.booked[thisBooking.datePicker.value][hourBlock] == 'undefined') {
-              table.classList.add('active');
-            } else if (thisBooking.booked[thisBooking.datePicker.value][hourBlock].includes(parseInt(thisBooking.selectedTable))) {
-              alert('Wybrany stolik jest już zajęty. Zmień godziny rezerwacji');
-              table.classList.remove('active');
-              return;
-            } else {
-              table.classList.add('active');
-            }
-          }
-        }
-      } else {
-        table.classList.remove('active');
-      }
-    }
-
-
-
 
     thisBooking.date = thisBooking.datePicker.value;
     thisBooking.hour = utils.hourToNumber(thisBooking.hourPicker.value);
@@ -215,26 +184,32 @@ class Booking{
 
   }
 
-  // checkTableBooked(){
-  //   const thisBooking = this;
 
+  // sprawdza dostępność stolików (vs godzina zamknięcia oraz vs już istniejące rezerwacje)
+  checkTableAvailible(table, hour){
+    const thisBooking = this;
 
-  //   for(let hourBlock = utils.hourToNumber(thisBooking.hourPicker.value); hourBlock < utils.hourToNumber(thisBooking.hourPicker.value) + thisBooking.hoursAmount.value; hourBlock +=0.5){
-  //     console.log(hourBlock);
-  //     console.log(thisBooking.selectedTable);
-  //     console.log(thisBooking.booked[thisBooking.date][hourBlock].includes(parseInt(thisBooking.selectedTable)));
-  //     if(thisBooking.booked[thisBooking.date][hourBlock].includes(parseInt(thisBooking.selectedTable)) == true){
-  //       console.log(thisBooking.selectedTable);
-  //       console.log(thisBooking.booked[thisBooking.date][thisBooking.hour].includes(thisBooking.selectedTable));
-  //       alert ('Wybrany stolik jest już zajęty. Zmień godziny rezerwacji');
+    const startHour = utils.hourToNumber(thisBooking.hourPicker.value);
 
-  //       // thisBooking.selectedTable.classList.remove(classNames.booking.tableBooked);
+    if (startHour + hour > settings.hours.close) {
+      alert('Restauracja pracuje tylko do godz. 24. Zmień termin rezerwacji');
+      return false;
+    } else {
+      for (let hourBlock = startHour; hourBlock < startHour + hour; hourBlock += 0.5) {
+        // console.log(thisBooking.booked[thisBooking.datePicker.value][hourBlock]);
+        // console.log(thisBooking.booked[thisBooking.datePicker.value][hourBlock].includes(parseInt(table)));
+        if(thisBooking.booked[thisBooking.datePicker.value][hourBlock] === undefined){
+          return true;
+        } else if(thisBooking.booked[thisBooking.datePicker.value][hourBlock].includes(parseInt(table))){
+          console.log('parseInt', parseInt(table));
+          alert('Wybrany stolik jest już zajęty. Zmień godziny rezerwacji');
+          return false;
+        }
+      }
+    }
+    return true;
+  }
 
-  //       return;
-  //     }
-
-  //   }
-  // }
 
   // wysyłanie rezerwacji do API
   sendBooking(){
@@ -269,6 +244,23 @@ class Booking{
     //   }
     // }
 
+    // Komunikat, jeśli stolik nie został wybrany
+    if(!thisBooking.selectedTable){
+      alert('Proszę wybierz stolik');
+      return;
+    }
+
+    // Komunikat, jeśli nr telefonu nie został podany
+    if(!thisBooking.dom.phone.value){
+      alert('Proszę podaj numer telefonu');
+      return;
+    }
+
+    // Komunikat, jeśli email nie został podany
+    if(!thisBooking.dom.address.value){
+      alert('Proszę podaj adres email');
+      return;
+    }
 
     const url = settings.db.url + '/' + settings.db.booking;
     // console.log('url', url);
@@ -283,7 +275,6 @@ class Booking{
       ppl: thisBooking.peopleAmount.value,
       starters: [],
     };
-
 
     console.log(payload);
 
@@ -311,8 +302,8 @@ class Booking{
         thisBooking.updateDOM();
         console.log('parsedResponse', parsedResponse);
       });
-
   }
+
 
   render(containerOfBooking){
     const thisBooking = this;
@@ -356,11 +347,13 @@ class Booking{
     thisBooking.dom.starters = thisBooking.dom.wrapper.querySelectorAll(select.booking.starters);
   }
 
+
+  // uruchamia widgety z datą, godziną, stolikami, liczbą osob i liczbą godzin rezerwacji
   initWidgets(){
     const thisBooking = this;
 
     thisBooking.peopleAmount = new AmountWidget(thisBooking.dom.peopleAmount);
-    thisBooking.hoursAmount = new AmountWidget(thisBooking.dom.hoursAmount);
+    thisBooking.hoursAmount = new AmountWidget(thisBooking.dom.hoursAmount, true);
     thisBooking.datePicker = new DatePicker(thisBooking.dom.datePicker);
     thisBooking.hourPicker = new HourPicker(thisBooking.dom.hourPicker);
     // console.log(thisBooking.peopleAmount);
@@ -370,32 +363,29 @@ class Booking{
     });
 
     thisBooking.dom.datePicker.addEventListener('updated', function () {
-      thisBooking.selectedTable = null;
-      thisBooking.updateDOM();
+      thisBooking.clearTable();
+      // thisBooking.updateDOM();
     });
 
     thisBooking.dom.hourPicker.addEventListener('updated', function () {
-      thisBooking.selectedTable = null;
-      thisBooking.updateDOM();
+      thisBooking.clearTable();
+      // thisBooking.updateDOM();
     });
 
-    // thisBooking.dom.hoursAmount.addEventListener('updated', function () {
-    //   thisBooking.selectedTable = null;
-    //   thisBooking.updateDOM();
-    // });
+    // sprawdzanie dostępności stolika podczas korzystania z hoursAmount
+    thisBooking.dom.hoursAmount.addEventListener('updated', function (event) {
+      event.preventDefault();
+      // thisBooking.clearTable();
+      console.log('thisBooking.selectedTable', thisBooking.selectedTable);
+      console.log('thisBooking.hoursAmount.value', thisBooking.hoursAmount.value);
 
-    // for(let table of thisBooking.dom.tables){
-    //   table.addEventListener('click', function(event){
-    //     event.preventDefault();
-    //     if(!table.classList.contains(classNames.booking.tableBooked)){
-    //       table.classList.add(classNames.booking.tableBooked);
-    //       thisBooking.selectedTable = table.dataset.table;
-    //       console.log(thisBooking.selectedTable);
-    //     } else {
-    //       return;
-    //     }
-    //   });
-    // }
+      if(!thisBooking.checkTableAvailible(thisBooking.selectedTable, thisBooking.hoursAmount.value)){
+        thisBooking.clearTable();
+        return;
+      }
+
+      // thisBooking.updateDOM();
+    });
 
     // Wysyłka formularza rezerwacji (Book Table)
     thisBooking.dom.form.addEventListener('submit', function(event){
@@ -405,6 +395,7 @@ class Booking{
       thisBooking.sendBooking();
     });
 
+    // uruchamia sprawdzanie dostępności przy kliknięciu w stolik i nadanie mu klasy active
     for (let table of thisBooking.dom.tables) {
       table.addEventListener('click', function (event) {
         event.preventDefault();
@@ -413,14 +404,29 @@ class Booking{
           return;
         }
 
+        if(!thisBooking.checkTableAvailible(table.dataset.table, thisBooking.hoursAmount.value)){
+          return;
+        }
+
+        thisBooking.clearTable();
+        table.classList.add('active');
         thisBooking.selectedTable = table.dataset.table;
-        thisBooking.updateDOM();
       });
     }
-
-
   }
 
+  // usuwa klasę active ze stolika
+  clearTable() {
+    const thisBooking = this;
+
+    for(let table of thisBooking.dom.tables){
+      if(thisBooking.selectedTable == table.dataset.table){
+        table.classList.remove('active');
+      }
+    }
+
+    thisBooking.selectedTable = null;
+  }
 }
 
 export default Booking;
