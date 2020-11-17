@@ -7,7 +7,7 @@ class AmountWidget extends BaseWidget{
 
     const thisWidget = this;
 
-    thisWidget.parseHalf = parseHalf ? true : false;
+    // thisWidget.parseHalf = parseHalf ? true : false;
 
     thisWidget.getElements(element);
     // thisWidget.value = settings.amountWidget.defaultValue; // tym zajmuje się teraz BaseWidget
@@ -15,7 +15,7 @@ class AmountWidget extends BaseWidget{
     // thisWidget.element.setAttribute('data-max', settings.amountWidget.defaultMax);
     // thisWidget.setValue(settings.amountWidget.defaultValue); //to rozwiązanie uniemożliwia poprawne działanie initAmountWidget w CartProduct
 
-    // thisWidget.value = thisWidget.dom.input.value; // tym zajmuje się teraz BaseWidget
+    thisWidget.value = thisWidget.dom.input.value; // tym zajmuje się teraz BaseWidget
     thisWidget.initActions();
 
     // console.log('AmountWidget:', thisWidget);
@@ -108,10 +108,10 @@ class AmountWidget extends BaseWidget{
 
     // console.log(thisWidget.dom.input.getAttribute('value'));
     // console.log(Number(thisWidget.dom.input.getAttribute('value')));
+    thisWidget.parseHalf = thisWidget.dom.input.getAttribute('value');
 
     thisWidget.dom.input.addEventListener('change', function(){
       // thisWidget.setValue(thisWidget.dom.input.value);
-      thisWidget.value = thisWidget.dom.input.value;
       // console.log(event);
       // console.log(thisWidget.dom.input.value);
     });

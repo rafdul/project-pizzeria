@@ -9,6 +9,9 @@ class Booking{
     const thisBooking = this;
 
     // const bookingElement = thisBooking.querySelector(select.containerOf.booking);
+
+    thisBooking.selectedTable = null;
+
     thisBooking.render(containerOfBooking);
     thisBooking.initWidgets();
     thisBooking.getData();
@@ -266,6 +269,7 @@ class Booking{
     //   }
     // }
 
+
     const url = settings.db.url + '/' + settings.db.booking;
     // console.log('url', url);
 
@@ -365,6 +369,21 @@ class Booking{
       thisBooking.updateDOM();
     });
 
+    thisBooking.dom.datePicker.addEventListener('updated', function () {
+      thisBooking.selectedTable = null;
+      thisBooking.updateDOM();
+    });
+
+    thisBooking.dom.hourPicker.addEventListener('updated', function () {
+      thisBooking.selectedTable = null;
+      thisBooking.updateDOM();
+    });
+
+    // thisBooking.dom.hoursAmount.addEventListener('updated', function () {
+    //   thisBooking.selectedTable = null;
+    //   thisBooking.updateDOM();
+    // });
+
     // for(let table of thisBooking.dom.tables){
     //   table.addEventListener('click', function(event){
     //     event.preventDefault();
@@ -386,12 +405,11 @@ class Booking{
       thisBooking.sendBooking();
     });
 
-
-
     for (let table of thisBooking.dom.tables) {
-      table.addEventListener('click', function () {
+      table.addEventListener('click', function (event) {
+        event.preventDefault();
 
-        if (table.classList.contains(classNames.booking.tableBooked)) {
+        if (table.classList.contains('booked')) {
           return;
         }
 
@@ -399,6 +417,7 @@ class Booking{
         thisBooking.updateDOM();
       });
     }
+
 
   }
 
